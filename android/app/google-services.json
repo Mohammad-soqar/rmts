@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "890480272228",
+    "project_id": "rmts-8f76b",
+    "storage_bucket": "rmts-8f76b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890480272228:android:a45a58d1b4d7b11430d071",
+        "android_client_info": {
+          "package_name": "com.company.rmts"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3iLa4bLDKMORAbL8pBfr6fm_6VT_d8Bw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
