@@ -1,13 +1,10 @@
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:rmts/data/models/user.dart' as userModel;
 import 'package:rmts/data/models/doctor.dart' as doctorModel;
 import 'package:rmts/data/models/patient.dart' as patientModel;
 import 'package:rmts/data/models/receptionist.dart' as receptionistModel;
-import 'package:rmts/data/models/nurse.dart' as nurseModel;
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rmts/ui/views/report_view.dart';
+import 'package:rmts/ui/views/bluetooth_view.dart';
+import 'package:rmts/ui/views/reports_view.dart';
 import '../../viewmodels/register_viewmodel.dart';
 
 class RegisterView extends StatelessWidget {
+  const RegisterView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final registerViewModel = Provider.of<RegisterViewModel>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register User'),
+        title: const Text('Register User'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -20,39 +23,40 @@ class RegisterView extends StatelessWidget {
             children: [
               TextField(
                 controller: registerViewModel.fullNameController,
-                decoration: InputDecoration(labelText: 'Full Name'),
+                decoration: const InputDecoration(labelText: 'Full Name'),
               ),
               TextField(
                 controller: registerViewModel.phoneNumberController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
+                decoration: const InputDecoration(labelText: 'Phone Number'),
               ),
               TextField(
                 controller: registerViewModel.emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
               ),
               TextField(
                 controller: registerViewModel.passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
               ),
               TextField(
                 controller: registerViewModel.nationalityController,
-                decoration: InputDecoration(labelText: 'Nationality'),
+                decoration: const InputDecoration(labelText: 'Nationality'),
               ),
               TextField(
                 controller: registerViewModel.genderController,
-                decoration: InputDecoration(labelText: 'Gender'),
+                decoration: const InputDecoration(labelText: 'Gender'),
               ),
               TextField(
                 controller: registerViewModel.birthDateController,
-                decoration: InputDecoration(labelText: 'Birth Date (YYYY-MM-DD)'),
+                decoration:
+                    const InputDecoration(labelText: 'Birth Date (YYYY-MM-DD)'),
               ),
               DropdownButton<String>(
                 value: registerViewModel.role,
                 onChanged: (value) {
                   registerViewModel.setRole(value ?? 'Patient');
                 },
-                items: [
+                items: const [
                   DropdownMenuItem(value: 'Patient', child: Text('Patient')),
                   DropdownMenuItem(value: 'Doctor', child: Text('Doctor')),
                 ],
@@ -60,36 +64,48 @@ class RegisterView extends StatelessWidget {
               if (registerViewModel.role == 'Patient') ...[
                 TextField(
                   controller: registerViewModel.emergencyContactController,
-                  decoration: InputDecoration(labelText: 'Emergency Contact'),
+                  decoration:
+                      const InputDecoration(labelText: 'Emergency Contact'),
                 ),
                 TextField(
                   controller: registerViewModel.doctorIdController,
-                  decoration: InputDecoration(labelText: 'Doctor ID'),
+                  decoration: const InputDecoration(labelText: 'Doctor ID'),
                 ),
               ],
               if (registerViewModel.role == 'Doctor') ...[
                 TextField(
                   controller: registerViewModel.licenseNumberController,
-                  decoration: InputDecoration(labelText: 'License Number'),
+                  decoration:
+                      const InputDecoration(labelText: 'License Number'),
                 ),
               ],
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   await registerViewModel.registerUser();
                 },
-                child: Text('Register'),
+                child: const Text('Register'),
               ),
-              SizedBox(height: 20),
-ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ReportsView()),
-    );
-  },
-  child: Text('Reports Page'),
-)
+              const SizedBox(height: 20),
+             
+                ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BluetoothView()),
+                  );
+                },
+                child: const Text('Bluetooth Page'),
+              ),
+               ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ReportsView()),
+                  );
+                },
+                child: const Text('Reports Page'),
+              )
             ],
           ),
         ),
