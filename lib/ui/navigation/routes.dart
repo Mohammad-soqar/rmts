@@ -4,10 +4,12 @@ import 'package:rmts/viewmodels/register_viewmodel.dart';
 import '../views/register_view.dart';
 
 class HomeView extends StatelessWidget {
+  const HomeView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Home')),
+      appBar: AppBar(title: const Text('Home')),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
@@ -22,7 +24,7 @@ class HomeView extends StatelessWidget {
 );
 
           },
-          child: Text('Go to Register'),
+          child: const Text('Go to Register'),
         ),
       ),
     );
