@@ -1,4 +1,6 @@
 
+// ignore_for_file: library_prefixes
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rmts/data/models/user.dart' as userModel;
