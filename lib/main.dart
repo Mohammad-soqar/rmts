@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:rmts/ui/views/register_view.dart';
 import 'package:rmts/viewmodels/register_viewmodel.dart';
 import 'viewmodels/reports_viewmodel.dart';
-import 'ui/views/reports_view.dart';
 
 
 void main() async {
@@ -37,7 +36,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  RegisterView(), // Set RegisterView as the initial screen
+      home:  const RegisterView(), // Set RegisterView as the initial screen
     );
   }
 }
