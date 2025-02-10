@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseStorageService {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance; //already connected to firebase
