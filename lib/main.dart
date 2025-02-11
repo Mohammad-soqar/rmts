@@ -1,24 +1,29 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/data/repositories/glove_repository.dart';
 import 'package:rmts/ui/views/register_view.dart';
+import 'package:rmts/viewmodels/glove_viewmodel.dart';
 import 'package:rmts/viewmodels/register_viewmodel.dart';
+
 import 'viewmodels/reports_viewmodel.dart';
 
-
 void main() async {
-  // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize Firebase
   await Firebase.initializeApp();
-  
+  final gloveRepository = GloveRepository();
+
   // Run the app
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => RegisterViewModel()), // RegisterViewModel Provider
-        ChangeNotifierProvider(create: (_) => ReportsViewModel()), // ReportsViewModel Provider
+        ChangeNotifierProvider(
+            create: (_) => RegisterViewModel()), // RegisterViewModel Provider
+        ChangeNotifierProvider(
+            create: (_) => ReportsViewModel()), // ReportsViewModel Provider
+        ChangeNotifierProvider(
+            create: (_) =>
+                GloveViewModel(gloveRepository)), // ReportsViewModel Provider
       ],
       child: const MyApp(),
     ),
@@ -36,7 +41,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  const RegisterView(), // Set RegisterView as the initial screen
+      home: const RegisterView(), // Set RegisterView as the initial screen
     );
   }
 }
