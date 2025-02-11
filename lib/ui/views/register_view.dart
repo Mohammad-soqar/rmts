@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/ui/views/bluetooth_view.dart';
+import 'package:rmts/ui/views/glove_management/add_edit_glove.dart';
 import 'package:rmts/ui/views/reports_view.dart';
+
 import '../../viewmodels/register_viewmodel.dart';
 
 class RegisterView extends StatelessWidget {
@@ -87,21 +89,33 @@ class RegisterView extends StatelessWidget {
                 child: const Text('Register'),
               ),
               const SizedBox(height: 20),
-             
-                ElevatedButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BluetoothView()),
+                    MaterialPageRoute(
+                        builder: (context) => const BluetoothView()),
                   );
                 },
                 child: const Text('Bluetooth Page'),
               ),
-               ElevatedButton(
+              const SizedBox(height: 20),
+              ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ReportsView()),
+                    MaterialPageRoute(
+                        builder: (context) => const AddEditGloveView()),
+                  );
+                },
+                child: const Text('Add Glove Page'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ReportsView()),
                   );
                 },
                 child: const Text('Reports Page'),
