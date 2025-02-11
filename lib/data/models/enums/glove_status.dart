@@ -1,4 +1,4 @@
-enum SmartGloveStatus {
+enum GloveStatus {
   idle,
   collecting,
   transmitting,
