@@ -1,4 +1,3 @@
-
 // ignore_for_file: library_prefixes
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +10,49 @@ import 'package:rmts/data/models/receptionist.dart' as receptionistModel;
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String patientCollection = 'patients';
+
+
+  // Get Current User Session
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+    Future<List<patientModel.Patient>> getPatients() async {
+    QuerySnapshot snapshot = await _firestore.collection(patientCollection).get();
+    return snapshot.docs.map((doc) => patientModel.Patient.fromSnap(doc)).toList();
+  }
+
+
+  // Sign In User
+  Future<userModel.User?> signIn(String email, String password) async {
+    try {
+      // Authenticate the user
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      String uid = userCredential.user!.uid;
+
+      // Retrieve user data from Firestore
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+
+      if (userDoc.exists) {
+        return userModel.User.fromSnap(
+            userDoc); // Use fromSnap instead of fromJson
+      } else {
+        return null; // User document not found
+      }
+    } catch (e) {
+      print("Error signing in: $e");
+      return null;
+    }
+  }
+
+  // Sign Out User
+  Future<void> signOut() async {
+    await _auth.signOut();
+  }
 
   // Register a new user
   Future<String> registerUser(

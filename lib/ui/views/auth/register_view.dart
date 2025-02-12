@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/ui/views/bluetooth_view.dart';
+import 'package:rmts/ui/views/glove_management/add_edit_glove.dart';
 import 'package:rmts/ui/views/reports_view.dart';
-import '../../viewmodels/register_viewmodel.dart';
+
+import '../../../viewmodels/auth/register_viewmodel.dart';
 
 class RegisterView extends StatelessWidget {
   const RegisterView({super.key});
@@ -80,32 +82,7 @@ class RegisterView extends StatelessWidget {
                 ),
               ],
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  await registerViewModel.registerUser();
-                },
-                child: const Text('Register'),
-              ),
-              const SizedBox(height: 20),
-             
-                ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => BluetoothView()),
-                  );
-                },
-                child: const Text('Bluetooth Page'),
-              ),
-               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ReportsView()),
-                  );
-                },
-                child: const Text('Reports Page'),
-              )
+           
             ],
           ),
         ),
