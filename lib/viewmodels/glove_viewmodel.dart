@@ -5,12 +5,14 @@ import 'package:rmts/data/repositories/glove_repository.dart';
 
 class GloveViewModel extends ChangeNotifier {
   final GloveRepository _gloveRepository;
+  Glove? _currentGlove; // Store fetched glove data
   GloveStatus _selectedStatus = GloveStatus.idle;
   bool _isLoading = false;
   String? errorMessage;
   GloveStatus get selectedStatus => _selectedStatus;
   GloveViewModel(this._gloveRepository);
 
+  Glove? get currentGlove => _currentGlove; // Getter for UI
   bool get isLoading => _isLoading;
 
   void setSelectedStatus(GloveStatus newStatus) {
@@ -18,16 +20,15 @@ class GloveViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Glove> fetchGlove(String gloveId) async {
+  Future<void> fetchGlove(String gloveId) async {
     _setLoading(true);
 
     try {
-      final glove = await _gloveRepository.fetchGlove(gloveId);
+      _currentGlove = await _gloveRepository.fetchGlove(gloveId);
       _clearError();
-      return glove;
     } catch (e) {
       _setError('Failed to fetch glove: ${e.toString()}');
-      rethrow;
+      print('Failed to fetch glove: ${e.toString()}');
     } finally {
       _setLoading(false);
     }
