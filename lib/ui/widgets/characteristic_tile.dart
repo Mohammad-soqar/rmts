@@ -5,45 +5,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:rmts/utils/snackbar.dart';
 
-
 import "descriptor_tile.dart";
 
 class CharacteristicTile extends StatefulWidget {
   final BluetoothCharacteristic characteristic;
   final List<DescriptorTile> descriptorTiles;
 
-  const CharacteristicTile({Key? key, required this.characteristic, required this.descriptorTiles}) : super(key: key);
+  const CharacteristicTile(
+      {super.key, required this.characteristic, required this.descriptorTiles});
 
   @override
   State<CharacteristicTile> createState() => _CharacteristicTileState();
 }
 
 class _CharacteristicTileState extends State<CharacteristicTile> {
-double _value = 0.0; // Class-level variable to store parsed double
+  double _value = 0.0; // Class-level variable to store parsed double
+  String receivedData = ''; // Class-level variable to store parsed double
 
   late StreamSubscription<List<int>> _lastValueSubscription;
 
   @override
   void initState() {
     super.initState();
- _lastValueSubscription = widget.characteristic.lastValueStream.listen((value) {
-  // Ensure value is a List<int>, which you need to convert to a String first
-  String receivedData = String.fromCharCodes(value);
+    _lastValueSubscription =
+        widget.characteristic.lastValueStream.listen((value) {
+      // Ensure value is a List<int>, which you need to convert to a String first
+      String receivedData = String.fromCharCodes(value);
 
-  // Now parse the string to a double
-  double parsedValue = double.tryParse(receivedData) ?? 0.0;
+      // Now parse the string to a double
+      double parsedValue = double.tryParse(receivedData) ?? 0.0;
 
-  // Optionally, print the received data and the parsed value for debugging
-  print("Received raw value: $receivedData, Parsed value: $parsedValue");
+      // Optionally, print the received data and the parsed value for debugging
+      print("Received raw value: $receivedData, Parsed value: $parsedValue");
 
-  // Update the state with the parsed value
-  if (mounted) {
-    setState(() {
-      _value = parsedValue; // This will assign the parsed double to _value
+      // Update the state with the parsed value
+      if (mounted) {
+        setState(() {
+          _value = parsedValue; // This will assign the parsed double to _value
+        });
+      }
     });
-  }
-});
-
   }
 
   @override
@@ -56,7 +57,12 @@ double _value = 0.0; // Class-level variable to store parsed double
 
   List<int> _getRandomBytes() {
     final math = Random();
-    return [math.nextInt(255), math.nextInt(255), math.nextInt(255), math.nextInt(255)];
+    return [
+      math.nextInt(255),
+      math.nextInt(255),
+      math.nextInt(255),
+      math.nextInt(255)
+    ];
   }
 
   Future onReadPressed() async {
@@ -71,7 +77,8 @@ double _value = 0.0; // Class-level variable to store parsed double
 
   Future onWritePressed() async {
     try {
-      await c.write(_getRandomBytes(), withoutResponse: c.properties.writeWithoutResponse);
+      await c.write(_getRandomBytes(),
+          withoutResponse: c.properties.writeWithoutResponse);
       Snackbar.show(ABC.c, "Write: Success", success: true);
       if (c.properties.read) {
         await c.read();
@@ -94,24 +101,25 @@ double _value = 0.0; // Class-level variable to store parsed double
         setState(() {});
       }
     } catch (e) {
-      Snackbar.show(ABC.c, prettyException("Subscribe Error:", e), success: false);
+      Snackbar.show(ABC.c, prettyException("Subscribe Error:", e),
+          success: false);
       print(e);
     }
   }
 
   Widget buildUuid(BuildContext context) {
     String uuid = '0x${widget.characteristic.uuid.str.toUpperCase()}';
-    return Text(uuid, style: TextStyle(fontSize: 13));
+    return Text(uuid, style: const TextStyle(fontSize: 13));
   }
 
   Widget buildValue(BuildContext context) {
     String data = _value.toString();
-    return Text(data, style: TextStyle(fontSize: 13, color: Colors.grey));
+    return Text(data, style: const TextStyle(fontSize: 13, color: Colors.grey));
   }
 
   Widget buildReadButton(BuildContext context) {
     return TextButton(
-        child: Text("Read"),
+        child: const Text("Read"),
         onPressed: () async {
           await onReadPressed();
           if (mounted) {
@@ -168,6 +176,7 @@ double _value = 0.0; // Class-level variable to store parsed double
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const Text('Characteristic'),
+            Text(receivedData),
             buildUuid(context),
             buildValue(context),
           ],
