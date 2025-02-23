@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/data/repositories/glove_repository.dart';
-import 'package:rmts/ui/views/auth/login_view.dart';
+import 'package:rmts/ui/views/auth/register_view.dart';
 import 'package:rmts/ui/views/home_view.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/register_viewmodel.dart';
@@ -59,9 +59,9 @@ class AuthWrapper extends StatelessWidget {
     final authViewModel = Provider.of<AuthViewModel>(context);
 
     if (authViewModel.currentUser == null) {
-      return LoginView(); // If no user is logged in, show login screen
+      return const RegisterView(); // If no user is logged in, show login screen
     } else {
-      return HomeView(); // If user is logged in, show home screen
+      return const HomeView(); // If user is logged in, show home screen
     }
   }
 }
