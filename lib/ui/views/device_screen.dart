@@ -317,7 +317,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              buildRemoteId(context),
+              buildRemoteId(context),//hhh
               ListTile(
                 leading: buildRssiTile(context),
                 title: Text('Device is ${_connectionState.toString().split('.')[1]}. $idwwww'  ),
