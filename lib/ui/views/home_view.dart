@@ -6,6 +6,8 @@ import 'package:rmts/ui/views/glove_management/glove_view.dart';
 import 'package:rmts/ui/views/reports_view.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
+import "package:rmts/viewmodels/appointment_viewmodel.dart";
+import 'package:rmts/ui/views/appointment_management/appointment_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -18,16 +20,25 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _fetchGlove());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fetchData());
   }
 
-  void _fetchGlove() async {
+  void _fetchData() async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     final gloveViewModel = Provider.of<GloveViewModel>(context, listen: false);
 
-    if (authViewModel.currentPatient != null &&
-        authViewModel.currentPatient!.gloveId.isNotEmpty) {
-      await gloveViewModel.fetchGlove(authViewModel.currentPatient!.gloveId);
+    if (authViewModel.currentPatient != null) {
+      final patientId = authViewModel.currentPatient!.uid;
+
+      print("Fetching data for patient ID: $patientId");
+
+      // Fetch Glove Data
+      if (authViewModel.currentPatient!.gloveId.isNotEmpty) {
+        print("Fetching glove data for: ${authViewModel.currentPatient!.gloveId}");
+        await gloveViewModel.fetchGlove(authViewModel.currentPatient!.gloveId);
+      }
+    } else {
+      print("No logged-in patient found.");
     }
   }
 
@@ -101,40 +112,53 @@ class _HomeViewState extends State<HomeView> {
                         ],
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BluetoothView()),
-                        );
-                      },
-                      child: const Text('Bluetooth Page'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AddEditGloveView()),
-                        );
-                      },
-                      child: const Text('Add Glove Page'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ReportsView()),
-                        );
-                      },
-                      child: const Text('Reports Page'),
-                    ),
                   ],
                 ),
               ),
+
+            const SizedBox(height: 20),
+            // Navigation Buttons
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BluetoothView()),
+                );
+              },
+              child: const Text('Bluetooth Page'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AddEditGloveView()),
+                );
+              },
+              child: const Text('Add Glove Page'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ReportsView()),
+                );
+              },
+              child: const Text('Reports Page'),
+            ),
+            const SizedBox(height: 20),
+            // ✅ New Appointments Button
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AppointmentView(patientId: authViewModel.currentPatient!.uid),
+                  ),
+                );
+              },
+              child: const Text("Appointments"),
+            ),
           ],
         ),
       ),
