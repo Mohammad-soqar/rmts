@@ -7,27 +7,27 @@ import 'package:rmts/ui/views/home_view.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/register_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
+import 'package:rmts/viewmodels/appointment_viewmodel.dart';
+import 'package:rmts/ui/views/appointment_management/add_appointment_view.dart';
+import 'package:rmts/ui/views/appointment_management/appointment_view.dart';
 
 import 'viewmodels/reports_viewmodel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(); // Ensure Firebase is initialized
+
   final gloveRepository = GloveRepository();
 
-  // Run the app
+  // Run the app with MultiProvider for state management
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthViewModel()), // Auth Provider
-
-        ChangeNotifierProvider(
-            create: (_) => RegisterViewModel()), // RegisterViewModel Provider
-        ChangeNotifierProvider(
-            create: (_) => ReportsViewModel()), // ReportsViewModel Provider
-        ChangeNotifierProvider(
-            create: (_) =>
-                GloveViewModel(gloveRepository)), // ReportsViewModel Provider
+        ChangeNotifierProvider(create: (_) => AuthViewModel()), // Authentication Provider
+        ChangeNotifierProvider(create: (_) => RegisterViewModel()), // Registration Provider
+        ChangeNotifierProvider(create: (_) => ReportsViewModel()), // Reports Provider
+        ChangeNotifierProvider(create: (_) => GloveViewModel(gloveRepository)), // Glove Data Provider
+        ChangeNotifierProvider(create: (_) => AppointmentViewmodel()), // Appointment Management
       ],
       child: const MyApp(),
     ),
@@ -40,17 +40,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'RMTS System',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const AuthWrapper(), // Decide screen based on user authentication
+      home: const AuthWrapper(), // Decide screen based on authentication
+      routes: {
+        '/home': (context) => const HomeView(),
+        '/viewAppointments': (context) => const AppointmentView(patientId: "patient123"),
+        '/addAppointment': (context) => const AddAppointmentView(patientId: "patient123"),
+      },
     );
   }
 }
 
-// This widget determines if the user is logged in or not
+// 🔹 Handles authentication state and redirects accordingly
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
@@ -59,9 +65,9 @@ class AuthWrapper extends StatelessWidget {
     final authViewModel = Provider.of<AuthViewModel>(context);
 
     if (authViewModel.currentUser == null) {
-      return LoginView(); // If no user is logged in, show login screen
+      return LoginView(); // User is not logged in, show login screen
     } else {
-      return HomeView(); // If user is logged in, show home screen
+      return HomeView(); // User is authenticated, go to home screen
     }
   }
 }
