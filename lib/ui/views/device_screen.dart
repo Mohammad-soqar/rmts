@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:rmts/ui/widgets/characteristic_tile.dart';
@@ -19,32 +20,35 @@ class DeviceScreen extends StatefulWidget {
 class _DeviceScreenState extends State<DeviceScreen> {
   int? _rssi;
   int? _mtuSize;
-  BluetoothConnectionState _connectionState = BluetoothConnectionState.disconnected;
+  BluetoothConnectionState _connectionState =
+      BluetoothConnectionState.disconnected;
   List<BluetoothService> _services = [];
   bool _isDiscoveringServices = false;
   bool _isConnecting = false;
   bool _isDisconnecting = false;
   String idwwww = "";
 
-  late StreamSubscription<BluetoothConnectionState> _connectionStateSubscription;
+  late StreamSubscription<BluetoothConnectionState>
+      _connectionStateSubscription;
   late StreamSubscription<bool> _isConnectingSubscription;
   late StreamSubscription<bool> _isDisconnectingSubscription;
   late StreamSubscription<int> _mtuSubscription;
 
- // Real-time data variables
+  // Real-time data variables
   String realTimeData = 'No data yet';
   late BluetoothCharacteristic _realTimeDataCharacteristic;
 
-    @override
+  @override
   void initState() {
     super.initState();
 
-    // Set up the connection state listener
-    _connectionStateSubscription = widget.device.connectionState.listen((state) async {
+    // Listen to connection state changes
+    _connectionStateSubscription =
+        widget.device.connectionState.listen((state) async {
       _connectionState = state;
       if (state == BluetoothConnectionState.connected) {
-        _services = []; // Must rediscover services when reconnected
-        await _discoverServices(); // Call the service discovery method
+        _services = []; // Rediscover services on reconnection
+        await _discoverServices();
       }
       if (state == BluetoothConnectionState.connected && _rssi == null) {
         _rssi = await widget.device.readRssi();
@@ -54,7 +58,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
       }
     });
 
-    // Set up the MTU listener
+    // Listen for MTU changes
     _mtuSubscription = widget.device.mtu.listen((value) {
       _mtuSize = value;
       if (mounted) {
@@ -62,7 +66,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
       }
     });
 
-    // Set up the connecting and disconnecting listeners
+    // Listen for connecting/disconnecting status
     _isConnectingSubscription = widget.device.isConnecting.listen((value) {
       _isConnecting = value;
       if (mounted) {
@@ -70,14 +74,14 @@ class _DeviceScreenState extends State<DeviceScreen> {
       }
     });
 
-    _isDisconnectingSubscription = widget.device.isDisconnecting.listen((value) {
+    _isDisconnectingSubscription =
+        widget.device.isDisconnecting.listen((value) {
       _isDisconnecting = value;
       if (mounted) {
         setState(() {});
       }
     });
   }
-
 
   @override
   void dispose() {
@@ -88,73 +92,88 @@ class _DeviceScreenState extends State<DeviceScreen> {
     super.dispose();
   }
 
-  bool get isConnected {
-    return _connectionState == BluetoothConnectionState.connected;
-  }
+  bool get isConnected =>
+      _connectionState == BluetoothConnectionState.connected;
 
-  // Function to handle real-time data updates
+  // Update real-time data display
   void _updateRealTimeData(String newData) {
     setState(() {
       realTimeData = newData;
     });
   }
-    Future<void> _discoverServices() async {
+
+  Future<void> _discoverServices() async {
     try {
       _services = await widget.device.discoverServices();
       _findRealTimeDataCharacteristic();
       Snackbar.show(ABC.c, "Discover Services: Success", success: true);
     } catch (e) {
-      Snackbar.show(ABC.c, prettyException("Discover Services Error:", e), success: false);
+      Snackbar.show(ABC.c, prettyException("Discover Services Error:", e),
+          success: false);
       print(e);
     }
   }
 
-    void _findRealTimeDataCharacteristic() {
+  void _findRealTimeDataCharacteristic() {
+    bool found = false;
     for (var service in _services) {
       for (var characteristic in service.characteristics) {
         idwwww = characteristic.uuid.toString();
-        // Replace with the correct characteristic UUID for your data
-        if (characteristic.uuid.toString() == '6E400003-B5A3-F393-E0A9-E50E24DCCA9E') {
+        // Debug: Log each discovered UUID
+        
+        // Use a case-insensitive check for the target characteristic UUID.
+        // Updated to match the UUID observed in your debug logs.
+        if (characteristic.uuid.toString().toUpperCase() ==
+            'BEB5483E-36E1-4688-B7F5-EA07361B26A8') {
           _realTimeDataCharacteristic = characteristic;
           _setRealTimeDataListener();
+          found = true;
+          break;
         }
       }
+      if (found) break;
+    }
+    if (!found) {
+      print("Real-time data characteristic not found.");
     }
   }
 
-   // Set a listener on the characteristic to get real-time data updates
- void _setRealTimeDataListener() {
-  _realTimeDataCharacteristic.setNotifyValue(true).then((_) {
-    _realTimeDataCharacteristic.value.listen((value) {
-      // Log the raw data to see what's being returned
-      print("Received data: $value");
-
-      // If it's in bytes, you may need to parse it
-      String parsedData = String.fromCharCodes(value);
-      print("Parsed data: $parsedData");
-
-      _updateRealTimeData(parsedData);
+  // Listen for notifications on the characteristic
+  void _setRealTimeDataListener() {
+    _realTimeDataCharacteristic.setNotifyValue(true).then((_) {
+      _realTimeDataCharacteristic.value.listen((value) {
+        // Log the raw byte data
+        print("Received data: $value");
+        // Convert bytes to String (expected format: "Counter: 1258")
+        String parsedData = String.fromCharCodes(value);
+        print("Parsed data: $parsedData");
+        _updateRealTimeData(parsedData);
+      });
     });
-  });
-}
+  }
 
-
-   Widget buildRealTimeData(BuildContext context) {
+  Widget buildRealTimeData(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Text('Real-time Data: $realTimeData', style: Theme.of(context).textTheme.bodyLarge),
+      child: Text('Real-time Data: $realTimeData',
+          style: Theme.of(context).textTheme.bodyLarge),
     );
   }
+
+  
+
 
   Future onConnectPressed() async {
     try {
       await widget.device.connectAndUpdateStream();
       Snackbar.show(ABC.c, "Connect: Success", success: true);
     } catch (e) {
-      if (e is FlutterBluePlusException && e.code == FbpErrorCode.connectionCanceled.index) {
-        // ignore connections canceled by the user
+      if (e is FlutterBluePlusException &&
+          e.code == FbpErrorCode.connectionCanceled.index) {
+        // Ignore user-canceled connections
       } else {
-        Snackbar.show(ABC.c, prettyException("Connect Error:", e), success: false);
+        Snackbar.show(ABC.c, prettyException("Connect Error:", e),
+            success: false);
         print(e);
       }
     }
@@ -175,7 +194,8 @@ class _DeviceScreenState extends State<DeviceScreen> {
       await widget.device.disconnectAndUpdateStream();
       Snackbar.show(ABC.c, "Disconnect: Success", success: true);
     } catch (e) {
-      Snackbar.show(ABC.c, prettyException("Disconnect Error:", e), success: false);
+      Snackbar.show(ABC.c, prettyException("Disconnect Error:", e),
+          success: false);
       print(e);
     }
   }
@@ -190,7 +210,8 @@ class _DeviceScreenState extends State<DeviceScreen> {
       _services = await widget.device.discoverServices();
       Snackbar.show(ABC.c, "Discover Services: Success", success: true);
     } catch (e) {
-      Snackbar.show(ABC.c, prettyException("Discover Services Error:", e), success: false);
+      Snackbar.show(ABC.c, prettyException("Discover Services Error:", e),
+          success: false);
       print(e);
     }
     if (mounted) {
@@ -205,31 +226,29 @@ class _DeviceScreenState extends State<DeviceScreen> {
       await widget.device.requestMtu(223, predelay: 0);
       Snackbar.show(ABC.c, "Request Mtu: Success", success: true);
     } catch (e) {
-      Snackbar.show(ABC.c, prettyException("Change Mtu Error:", e), success: false);
+      Snackbar.show(ABC.c, prettyException("Change Mtu Error:", e),
+          success: false);
       print(e);
     }
   }
 
   List<Widget> _buildServiceTiles(BuildContext context, BluetoothDevice d) {
-    return _services
-        .map(
-          (s) => ServiceTile(
-            service: s,
-            characteristicTiles: s.characteristics.map((c) => _buildCharacteristicTile(c)).toList(),
-          ),
-        )
-        .toList();
+    return _services.map((s) {
+      return ServiceTile(
+        service: s,
+        characteristicTiles:
+            s.characteristics.map((c) => _buildCharacteristicTile(c)).toList(),
+      );
+    }).toList();
   }
 
   CharacteristicTile _buildCharacteristicTile(BluetoothCharacteristic c) {
     return CharacteristicTile(
       characteristic: c,
-      descriptorTiles: c.descriptors.map((d) => DescriptorTile(descriptor: d)).toList(),
+      descriptorTiles:
+          c.descriptors.map((d) => DescriptorTile(descriptor: d)).toList(),
     );
   }
-
-  // Real-time data display widget
- 
 
   Widget buildSpinner(BuildContext context) {
     return Padding(
@@ -255,8 +274,11 @@ class _DeviceScreenState extends State<DeviceScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        isConnected ? const Icon(Icons.bluetooth_connected) : const Icon(Icons.bluetooth_disabled),
-        Text(((isConnected && _rssi != null) ? '${_rssi!} dBm' : ''), style: Theme.of(context).textTheme.bodySmall)
+        isConnected
+            ? const Icon(Icons.bluetooth_connected)
+            : const Icon(Icons.bluetooth_disabled),
+        Text((isConnected && _rssi != null) ? '${_rssi!} dBm' : '',
+            style: Theme.of(context).textTheme.bodySmall)
       ],
     );
   }
@@ -285,24 +307,55 @@ class _DeviceScreenState extends State<DeviceScreen> {
 
   Widget buildMtuTile(BuildContext context) {
     return ListTile(
-        title: const Text('MTU Size'),
-        subtitle: Text('$_mtuSize bytes'),
-        trailing: IconButton(
-          icon: const Icon(Icons.edit),
-          onPressed: onRequestMtuPressed,
-        ));
+      title: const Text('MTU Size'),
+      subtitle: Text('$_mtuSize bytes'),
+      trailing: IconButton(
+        icon: const Icon(Icons.edit),
+        onPressed: onRequestMtuPressed,
+      ),
+    );
   }
 
   Widget buildConnectButton(BuildContext context) {
-    return Row(children: [
-      if (_isConnecting || _isDisconnecting) buildSpinner(context),
-      TextButton(
-          onPressed: _isConnecting ? onCancelPressed : (isConnected ? onDisconnectPressed : onConnectPressed),
+    return Row(
+      children: [
+        if (_isConnecting || _isDisconnecting) buildSpinner(context),
+        TextButton(
+          onPressed: _isConnecting
+              ? onCancelPressed
+              : (isConnected ? onDisconnectPressed : onConnectPressed),
           child: Text(
             _isConnecting ? "CANCEL" : (isConnected ? "DISCONNECT" : "CONNECT"),
-            style: Theme.of(context).primaryTextTheme.labelLarge?.copyWith(color: Colors.white),
-          ))
-    ]);
+            style: Theme.of(context)
+                .primaryTextTheme
+                .labelLarge
+                ?.copyWith(color: Colors.white),
+          ),
+        )
+      ],
+    );
+  }
+
+  
+  // --- End of vibrator buttons ---
+
+  Widget buildBody(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          buildRemoteId(context),
+          ListTile(
+            leading: buildRssiTile(context),
+            title: Text(
+                'Device is ${_connectionState.toString().split('.')[1]}. $idwwww'),
+            trailing: buildGetServices(context),
+          ),
+          buildMtuTile(context),
+          buildRealTimeData(context),
+          ..._buildServiceTiles(context, widget.device),
+        ],
+      ),
+    );
   }
 
   @override
@@ -314,21 +367,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
           title: Text(widget.device.platformName),
           actions: [buildConnectButton(context)],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              buildRemoteId(context),//hhh
-              ListTile(
-                leading: buildRssiTile(context),
-                title: Text('Device is ${_connectionState.toString().split('.')[1]}. $idwwww'  ),
-                trailing: buildGetServices(context),
-              ),
-              buildMtuTile(context),
-              buildRealTimeData(context), // Real-time data section
-              ..._buildServiceTiles(context, widget.device),
-            ],
-          ),
-        ),
+        body: buildBody(context),
       ),
     );
   }
