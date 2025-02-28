@@ -16,7 +16,7 @@ class AppointmentViewmodel extends ChangeNotifier {
     _setLoading(true);
 
     try {
-      _appointments = await _repository.fetchAppointmentsByPatientId(patientId);
+      _appointments = (await _repository.fetchAppointmentsByPatientId(patientId)) as List<Appointment>;
       print("Loaded ${_appointments.length} appointments for $patientId"); 
       _clearError();
     } catch (e) {
