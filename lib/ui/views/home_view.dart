@@ -147,7 +147,7 @@ class _HomeViewState extends State<HomeView> {
               child: const Text('Reports Page'),
             ),
             const SizedBox(height: 20),
-            // ✅ New Appointments Button
+            //  New Appointments Button
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
