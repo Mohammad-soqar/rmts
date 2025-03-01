@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:rmts/ui/widgets/characteristic_tile.dart';
@@ -11,7 +11,7 @@ import 'package:rmts/utils/snackbar.dart';
 class DeviceScreen extends StatefulWidget {
   final BluetoothDevice device;
 
-  const DeviceScreen({Key? key, required this.device}) : super(key: key);
+  const DeviceScreen({super.key, required this.device});
 
   @override
   State<DeviceScreen> createState() => _DeviceScreenState();
@@ -120,7 +120,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
       for (var characteristic in service.characteristics) {
         idwwww = characteristic.uuid.toString();
         // Debug: Log each discovered UUID
-        
+
         // Use a case-insensitive check for the target characteristic UUID.
         // Updated to match the UUID observed in your debug logs.
         if (characteristic.uuid.toString().toUpperCase() ==
@@ -159,9 +159,6 @@ class _DeviceScreenState extends State<DeviceScreen> {
           style: Theme.of(context).textTheme.bodyLarge),
     );
   }
-
-  
-
 
   Future onConnectPressed() async {
     try {
@@ -232,8 +229,24 @@ class _DeviceScreenState extends State<DeviceScreen> {
     }
   }
 
+  /*
+  
+str =
+"1801"
+str128 =
+"00001801-0000-1000-8000-00805f9b34fb"
+uuid =
+"1801"
+uuid128 =
+"00001801-0000-1000-8000-00805f9b34fb"
+  */
+
   List<Widget> _buildServiceTiles(BuildContext context, BluetoothDevice d) {
-    return _services.map((s) {
+    return _services
+        .where((s) =>
+            s.uuid.toString() != "1801" &&
+            s.uuid.toString() != "1800") // Filter out default services
+        .map((s) {
       return ServiceTile(
         service: s,
         characteristicTiles:
@@ -251,8 +264,8 @@ class _DeviceScreenState extends State<DeviceScreen> {
   }
 
   Widget buildSpinner(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(14.0),
+    return const Padding(
+      padding: EdgeInsets.all(14.0),
       child: AspectRatio(
         aspectRatio: 1.0,
         child: CircularProgressIndicator(
@@ -270,49 +283,25 @@ class _DeviceScreenState extends State<DeviceScreen> {
     );
   }
 
-  Widget buildRssiTile(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        isConnected
-            ? const Icon(Icons.bluetooth_connected)
-            : const Icon(Icons.bluetooth_disabled),
-        Text((isConnected && _rssi != null) ? '${_rssi!} dBm' : '',
-            style: Theme.of(context).textTheme.bodySmall)
-      ],
-    );
-  }
-
   Widget buildGetServices(BuildContext context) {
     return IndexedStack(
       index: (_isDiscoveringServices) ? 1 : 0,
       children: <Widget>[
         TextButton(
-          child: const Text("Get Services"),
           onPressed: onDiscoverServicesPressed,
+          child: const Text("Get Services"),
         ),
         const IconButton(
           icon: SizedBox(
+            width: 18.0,
+            height: 18.0,
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation(Colors.grey),
             ),
-            width: 18.0,
-            height: 18.0,
           ),
           onPressed: null,
         )
       ],
-    );
-  }
-
-  Widget buildMtuTile(BuildContext context) {
-    return ListTile(
-      title: const Text('MTU Size'),
-      subtitle: Text('$_mtuSize bytes'),
-      trailing: IconButton(
-        icon: const Icon(Icons.edit),
-        onPressed: onRequestMtuPressed,
-      ),
     );
   }
 
@@ -336,7 +325,6 @@ class _DeviceScreenState extends State<DeviceScreen> {
     );
   }
 
-  
   // --- End of vibrator buttons ---
 
   Widget buildBody(BuildContext context) {
@@ -345,12 +333,10 @@ class _DeviceScreenState extends State<DeviceScreen> {
         children: <Widget>[
           buildRemoteId(context),
           ListTile(
-            leading: buildRssiTile(context),
             title: Text(
-                'Device is ${_connectionState.toString().split('.')[1]}. $idwwww'),
+                'Device is ${_connectionState.toString().split('.')[1]}. ${widget.device.platformName}'),
             trailing: buildGetServices(context),
           ),
-          buildMtuTile(context),
           buildRealTimeData(context),
           ..._buildServiceTiles(context, widget.device),
         ],
