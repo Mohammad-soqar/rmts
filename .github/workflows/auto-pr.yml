@@ -1,0 +1,30 @@
+name: Auto PR and Merge
+
+on:
+  push:
+    branches:
+      - main  # Change this if you use a different branch
+
+jobs:
+  create-pr-and-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main  # Target branch in the original repo
+          branch: main  # Branch in your fork
+          title: "Automated PR from Fork"
+          body: "This pull request was automatically created."
+          delete-branch: false
+
+      - name: Enable Auto-Merge
+        run: |
+          gh pr merge --auto --squash --repo ORG/REPO
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
