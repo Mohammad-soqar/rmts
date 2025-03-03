@@ -2,14 +2,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/data/repositories/glove_repository.dart';
-import 'package:rmts/ui/views/auth/login_view.dart';
+import 'package:rmts/ui/themes/theme.dart';
+import 'package:rmts/ui/views/appointment_management/add_appointment_view.dart';
+import 'package:rmts/ui/views/appointment_management/appointment_view.dart';
+import 'package:rmts/ui/views/auth/splashScreens/SplashView.dart';
 import 'package:rmts/ui/views/home_view.dart';
+import 'package:rmts/viewmodels/appointment_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/register_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
-import 'package:rmts/viewmodels/appointment_viewmodel.dart';
-import 'package:rmts/ui/views/appointment_management/add_appointment_view.dart';
-import 'package:rmts/ui/views/appointment_management/appointment_view.dart';
 
 import 'viewmodels/reports_viewmodel.dart';
 
@@ -23,11 +24,17 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthViewModel()), // Authentication Provider
-        ChangeNotifierProvider(create: (_) => RegisterViewModel()), // Registration Provider
-        ChangeNotifierProvider(create: (_) => ReportsViewModel()), // Reports Provider
-        ChangeNotifierProvider(create: (_) => GloveViewModel(gloveRepository)), // Glove Data Provider
-        ChangeNotifierProvider(create: (_) => AppointmentViewmodel()), // Appointment Management
+        ChangeNotifierProvider(
+            create: (_) => AuthViewModel()), // Authentication Provider
+        ChangeNotifierProvider(
+            create: (_) => RegisterViewModel()), // Registration Provider
+        ChangeNotifierProvider(
+            create: (_) => ReportsViewModel()), // Reports Provider
+        ChangeNotifierProvider(
+            create: (_) =>
+                GloveViewModel(gloveRepository)), // Glove Data Provider
+        ChangeNotifierProvider(
+            create: (_) => AppointmentViewmodel()), // Appointment Management
       ],
       child: const MyApp(),
     ),
@@ -42,15 +49,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'RMTS System',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: const MaterialTheme(TextTheme()).light(), // Apply Light Theme
+      darkTheme: const MaterialTheme(TextTheme()).dark(), // Apply Dark Theme
+      themeMode: ThemeMode.system, // Switch based on system theme
       home: const AuthWrapper(), // Decide screen based on authentication
       routes: {
         '/home': (context) => const HomeView(),
-        '/viewAppointments': (context) => const AppointmentView(patientId: "patient123"),
-        '/addAppointment': (context) => const AddAppointmentView(patientId: "patient123"),
+        '/viewAppointments': (context) =>
+            const AppointmentView(patientId: "patient123"),
+        '/addAppointment': (context) =>
+            const AddAppointmentView(patientId: "patient123"),
       },
     );
   }
@@ -65,9 +73,9 @@ class AuthWrapper extends StatelessWidget {
     final authViewModel = Provider.of<AuthViewModel>(context);
 
     if (authViewModel.currentUser == null) {
-      return LoginView(); // User is not logged in, show login screen
+      return const SplashView(); // User is not logged in, show login screen
     } else {
-      return HomeView(); // User is authenticated, go to home screen
+      return const HomeView(); // User is authenticated, go to home screen
     }
   }
 }
