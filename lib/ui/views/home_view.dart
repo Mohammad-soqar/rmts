@@ -4,6 +4,7 @@ import 'package:rmts/ui/views/bluetooth_view.dart';
 import 'package:rmts/ui/views/glove_management/add_edit_glove.dart';
 import 'package:rmts/ui/views/glove_management/glove_view.dart';
 import 'package:rmts/ui/views/reports_view.dart';
+import 'package:rmts/ui/widgets/app_button.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
 import "package:rmts/viewmodels/appointment_viewmodel.dart";
@@ -126,6 +127,17 @@ class _HomeViewState extends State<HomeView> {
                 );
               },
               child: const Text('Bluetooth Page'),
+
+               CustomButton(
+            color: Theme.of(context).colorScheme.primary,
+            label: "Next!",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginView()),
+              );
+            },
+          ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
