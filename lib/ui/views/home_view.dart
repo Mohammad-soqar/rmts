@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/ui/views/appointment_management/appointment_view.dart';
 import 'package:rmts/ui/views/bluetooth_view.dart';
 import 'package:rmts/ui/views/glove_management/add_edit_glove.dart';
 import 'package:rmts/ui/views/glove_management/glove_view.dart';
 import 'package:rmts/ui/views/reports_view.dart';
+import 'package:rmts/ui/widgets/app_button.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
-import "package:rmts/viewmodels/appointment_viewmodel.dart";
-import 'package:rmts/ui/views/appointment_management/appointment_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -34,7 +34,8 @@ class _HomeViewState extends State<HomeView> {
 
       // Fetch Glove Data
       if (authViewModel.currentPatient!.gloveId.isNotEmpty) {
-        print("Fetching glove data for: ${authViewModel.currentPatient!.gloveId}");
+        print(
+            "Fetching glove data for: ${authViewModel.currentPatient!.gloveId}");
         await gloveViewModel.fetchGlove(authViewModel.currentPatient!.gloveId);
       }
     } else {
@@ -67,97 +68,69 @@ class _HomeViewState extends State<HomeView> {
 
             // Display Glove Container if available
             if (gloveViewModel.currentGlove != null)
-              GestureDetector(
-                onTap: () {
-                  // Navigate to Glove Info Page
+              CustomButton(
+                color: Theme.of(context).colorScheme.primary,
+                label:
+                    "Glove Page  Status: ${gloveViewModel.currentGlove!.status.name}",
+                onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const GloveView(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const GloveView()),
                   );
                 },
-                child: Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.all(20),
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 5,
-                            offset: Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          const Text(
-                            "Your Glove",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            "Status: ${gloveViewModel.currentGlove!.status.name}",
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
               ),
 
             const SizedBox(height: 20),
-            // Navigation Buttons
-            ElevatedButton(
+            CustomButton(
+              color: Theme.of(context).colorScheme.primary,
+              label: "Bluetooth Page",
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const BluetoothView()),
+                  MaterialPageRoute(
+                      builder: (context) => const BluetoothView()),
                 );
               },
-              child: const Text('Bluetooth Page'),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            CustomButton(
+              color: Theme.of(context).colorScheme.primary,
+              label: "Add Glove Page",
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AddEditGloveView()),
+                  MaterialPageRoute(
+                      builder: (context) => const AddEditGloveView()),
                 );
               },
-              child: const Text('Add Glove Page'),
             ),
-            ElevatedButton(
+            const SizedBox(height: 20),
+
+            CustomButton(
+              color: Theme.of(context).colorScheme.primary,
+              label: "Reports Page",
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ReportsView()),
                 );
               },
-              child: const Text('Reports Page'),
             ),
             const SizedBox(height: 20),
             //  New Appointments Button
-            ElevatedButton(
+            CustomButton(
+              color: Theme.of(context).colorScheme.primary,
+              label: "Appointments",
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AppointmentView(patientId: authViewModel.currentPatient!.uid),
+                    builder: (context) => AppointmentView(
+                      patientId: authViewModel.currentPatient!.uid,
+                    ),
                   ),
                 );
               },
-              child: const Text("Appointments"),
             ),
           ],
         ),
