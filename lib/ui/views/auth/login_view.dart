@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/ui/views/home_view.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/ui/widgets/app_text_field.dart';
 import 'package:rmts/ui/widgets/app_button.dart';
@@ -53,16 +56,18 @@ class _LoginViewState extends State<LoginView> {
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
+                const SizedBox(height: 10),
                 CustomButton(
                   color: Theme.of(context).colorScheme.primary,
                   label: "Login",
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginView()),
+                      MaterialPageRoute(builder: (context) => HomeView()),
                     );
                   },
                 ),
+                const SizedBox(height: 40),
               ],
             ),
           ),
