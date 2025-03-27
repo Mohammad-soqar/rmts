@@ -1,7 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/ui/views/home_view.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/ui/widgets/app_text_field.dart';
+import 'package:rmts/ui/widgets/app_button.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -21,49 +25,54 @@ class _LoginViewState extends State<LoginView> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
-          child: SingleChildScrollView(
-            child: Form(
-              key:_formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/rmt_logo.png",
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(height: 30),
-
-                  AppTextField(
-                    labelText: 'Email or Phone Number',
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  SizedBox(height: 10),
-
-                  AppTextField(
-                    labelText: 'Password',
-                    controller: passwordController,
-                    isPassword: true,
-                  ),
-                  SizedBox(height: 10),
-
-                 if (authViewModel.errorMessage != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        authViewModel.errorMessage!,
-                        style: TextStyle(color: Colors.red),
-                      ),
+            child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/rmt_logo.png",
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(height: 30),
+                AppTextField(
+                  labelText: 'Email or Phone Number',
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                SizedBox(height: 10),
+                AppTextField(
+                  labelText: 'Password',
+                  controller: passwordController,
+                  isPassword: true,
+                ),
+                SizedBox(height: 10),
+                if (authViewModel.errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      authViewModel.errorMessage!,
+                      style: TextStyle(color: Colors.red),
                     ),
-                
-                ],
-              ),
+                  ),
+                const SizedBox(height: 10),
+                CustomButton(
+                  color: Theme.of(context).colorScheme.primary,
+                  label: "Login",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeView()),
+                    );
+                  },
+                ),
+                const SizedBox(height: 40),
+              ],
             ),
-          )
-        ),
+          ),
+        )),
       ),
     );
   }
 }
-
-            
