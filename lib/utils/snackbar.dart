@@ -33,6 +33,13 @@ class Snackbar {
   }
 }
 
+showSnackBar(String content, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(content),
+    ),
+  );
+}
 
 String prettyException(String prefix, dynamic e) {
   if (e is FlutterBluePlusException) {

@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/ui/views/appointment_management/appointment_view.dart';
 import 'package:rmts/ui/views/bluetooth_view.dart';
-import 'package:rmts/ui/views/glove_management/add_edit_glove.dart';
 import 'package:rmts/ui/views/glove_management/glove_view.dart';
-import 'package:rmts/ui/views/reports_view.dart';
 import 'package:rmts/ui/widgets/app_button.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
@@ -92,7 +90,7 @@ class _HomeViewState extends State<HomeView> {
                 );
               },
             ),
-            const SizedBox(height: 20),
+            /*  const SizedBox(height: 20),
             CustomButton(
               color: Theme.of(context).colorScheme.primary,
               label: "Add Glove Page",
@@ -103,8 +101,8 @@ class _HomeViewState extends State<HomeView> {
                       builder: (context) => const AddEditGloveView()),
                 );
               },
-            ),
-            const SizedBox(height: 20),
+            ), */
+            /*  const SizedBox(height: 20),
 
             CustomButton(
               color: Theme.of(context).colorScheme.primary,
@@ -115,7 +113,7 @@ class _HomeViewState extends State<HomeView> {
                   MaterialPageRoute(builder: (context) => const ReportsView()),
                 );
               },
-            ),
+            ), */
             const SizedBox(height: 20),
             //  New Appointments Button
             CustomButton(
