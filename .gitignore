@@ -160,3 +160,4 @@ app.*.symbols
 .gclient_previous_custom_vars
 .gclient_previous_sync_commits
 android/app/google-services.json
+macos/Flutter/GeneratedPluginRegistrant.swift
