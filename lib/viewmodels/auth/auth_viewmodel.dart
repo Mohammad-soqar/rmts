@@ -3,11 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rmts/data/models/patient.dart' as patientModel;
 import 'package:rmts/data/models/user.dart' as userModel;
+import 'package:rmts/viewmodels/auth/find_glove_viewmodel.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  final FindGloveViewmodel _findGloveViewmodel = FindGloveViewmodel();
   userModel.User? _currentUser;
   patientModel.Patient? _currentPatient;
   bool _isLoading = false;
@@ -25,7 +26,7 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   // Sign In Method
- Future<String> signIn(BuildContext context) async {
+  Future<String> signIn(BuildContext context) async {
     _isLoading = true;
     notifyListeners();
     String res = "Some error occurred";
@@ -35,7 +36,7 @@ class AuthViewModel extends ChangeNotifier {
           passwordController.text.isNotEmpty) {
         await _auth.signInWithEmailAndPassword(
             email: emailController.text, password: passwordController.text);
-
+        _findGloveViewmodel.findGlove();
         res = "success";
       } else {
         res = "Please enter all the fields";
@@ -48,8 +49,6 @@ class AuthViewModel extends ChangeNotifier {
     }
     return res;
   }
-
-  
 
   // Auto Load User Session
   void _loadCurrentUser() {

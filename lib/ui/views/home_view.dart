@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/ui/views/appointment_management/appointment_view.dart';
 import 'package:rmts/ui/views/bluetooth_view.dart';
+import 'package:rmts/ui/views/glove_management/add_edit_glove.dart';
 import 'package:rmts/ui/views/glove_management/glove_view.dart';
+import 'package:rmts/ui/views/mpu_data_view.dart';
 import 'package:rmts/ui/widgets/app_button.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
+import 'package:rmts/viewmodels/auth/find_glove_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
 
 class HomeView extends StatefulWidget {
@@ -45,6 +48,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final authViewModel = Provider.of<AuthViewModel>(context);
     final gloveViewModel = Provider.of<GloveViewModel>(context);
+    final findGloveViewmodel = Provider.of<FindGloveViewmodel>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -90,7 +94,19 @@ class _HomeViewState extends State<HomeView> {
                 );
               },
             ),
-            /*  const SizedBox(height: 20),
+            const SizedBox(height: 20),
+
+            CustomButton(
+              color: Theme.of(context).colorScheme.primary,
+              label: "Mpu Test",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MpuDataView()),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
             CustomButton(
               color: Theme.of(context).colorScheme.primary,
               label: "Add Glove Page",
@@ -101,7 +117,15 @@ class _HomeViewState extends State<HomeView> {
                       builder: (context) => const AddEditGloveView()),
                 );
               },
-            ), */
+            ),
+            const SizedBox(height: 20),
+            CustomButton(
+              color: Theme.of(context).colorScheme.primary,
+              label: "connect Glove",
+              onPressed: () async {
+                await findGloveViewmodel.findGlove();
+              },
+            ),
             /*  const SizedBox(height: 20),
 
             CustomButton(

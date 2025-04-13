@@ -1,21 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/data/models/hive/mpu_data.dart';
 import 'package:rmts/data/repositories/glove_repository.dart';
+import 'package:rmts/data/services/sensor_data_service.dart';
 import 'package:rmts/ui/themes/theme.dart';
 import 'package:rmts/ui/views/auth/splashScreens/SplashView.dart';
 import 'package:rmts/ui/views/home_view.dart';
 import 'package:rmts/viewmodels/appointment_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
+import 'package:rmts/viewmodels/auth/find_glove_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/register_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
+import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 
 import 'viewmodels/reports_viewmodel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // Ensure Firebase is initialized
+  await Hive.initFlutter();
+  Hive.registerAdapter(MpuDataAdapter()); // Register Hive adapter
+  await Hive.openBox<MpuData>('mpu_data');
 
   final gloveRepository = GloveRepository();
 
@@ -23,6 +31,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => SensorDataService()),
+        ChangeNotifierProvider(create: (_) => MpuTestViewModel()),
+
         ChangeNotifierProvider(
             create: (_) => AuthViewModel()), // Authentication Provider
         ChangeNotifierProvider(
@@ -34,6 +45,7 @@ void main() async {
                 GloveViewModel(gloveRepository)), // Glove Data Provider
         ChangeNotifierProvider(
             create: (_) => AppointmentViewmodel()), // Appointment Management
+        ChangeNotifierProvider(create: (_) => FindGloveViewmodel()),
       ],
       child: const MyApp(),
     ),
@@ -48,10 +60,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'RMTS System',
-      theme: const MaterialTheme(TextTheme()).light(), 
-      darkTheme: const MaterialTheme(TextTheme()).dark(), 
-      themeMode: ThemeMode.system, 
-      home: const AuthWrapper(), 
+      theme: const MaterialTheme(TextTheme()).light(),
+      darkTheme: const MaterialTheme(TextTheme()).dark(),
+      themeMode: ThemeMode.system,
+      home: const AuthWrapper(),
     );
   }
 }

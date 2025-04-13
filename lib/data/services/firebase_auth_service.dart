@@ -12,15 +12,16 @@ class AuthMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String patientCollection = 'patients';
 
-
   // Get Current User Session
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-    Future<List<patientModel.Patient>> getPatients() async {
-    QuerySnapshot snapshot = await _firestore.collection(patientCollection).get();
-    return snapshot.docs.map((doc) => patientModel.Patient.fromSnap(doc)).toList();
+  Future<List<patientModel.Patient>> getPatients() async {
+    QuerySnapshot snapshot =
+        await _firestore.collection(patientCollection).get();
+    return snapshot.docs
+        .map((doc) => patientModel.Patient.fromSnap(doc))
+        .toList();
   }
-
 
   // Sign In User
   Future<userModel.User?> signIn(String email, String password) async {
@@ -106,6 +107,7 @@ class AuthMethods {
       String doctorId,
       String prescriptionId,
       String gloveId,
+      String gloveName,
       DateTime lastSynced,
       DateTime lastCheckIn) async {
     try {
@@ -117,6 +119,7 @@ class AuthMethods {
         gloveId: gloveId,
         lastSynced: lastSynced,
         lastCheckIn: lastCheckIn,
+        gloveName: gloveName,
       );
 
       // Save patient data to the "patients" collection

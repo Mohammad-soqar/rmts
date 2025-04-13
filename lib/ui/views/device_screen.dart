@@ -233,27 +233,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
   }
 
 
-  List<Widget> _buildServiceTiles(BuildContext context, BluetoothDevice d) {
-    return _services
-        .where((s) =>
-            s.uuid.toString() != "1801" &&
-            s.uuid.toString() != "1800") // Filter out default services
-        .map((s) {
-      return ServiceTile(
-        service: s,
-        characteristicTiles:
-            s.characteristics.map((c) => _buildCharacteristicTile(c)).toList(),
-      );
-    }).toList();
-  }
 
-  CharacteristicTile _buildCharacteristicTile(BluetoothCharacteristic c) {
-    return CharacteristicTile(
-      characteristic: c,
-      descriptorTiles:
-          c.descriptors.map((d) => DescriptorTile(descriptor: d)).toList(),
-    );
-  }
 
   Widget buildSpinner(BuildContext context) {
     return const Padding(
@@ -330,7 +310,6 @@ class _DeviceScreenState extends State<DeviceScreen> {
             trailing: buildGetServices(context),
           ),
           buildRealTimeData(context),
-          ..._buildServiceTiles(context, widget.device),
         ],
       ),
     );
