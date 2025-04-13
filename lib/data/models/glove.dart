@@ -4,6 +4,7 @@ import 'package:rmts/data/models/enums/glove_status.dart';
 
 class Glove extends BaseModel {
   final String gloveId;
+  String gloveName;
   final GloveStatus status;
   final String? patientId;
   final String? model;
@@ -15,6 +16,7 @@ class Glove extends BaseModel {
 
   Glove({
     required this.gloveId,
+    this.gloveName = 'test',
     required this.status,
     this.patientId = '',
     required this.model,
@@ -52,6 +54,7 @@ class Glove extends BaseModel {
   Map<String, dynamic> toJson() {
     return {
       'status': status.toString().split('.').last,
+      'gloveName': gloveName,
       'patientId': patientId,
       'model': model,
       'version': version,

@@ -1,6 +1,5 @@
 import '../services/firebase_auth_service.dart';
 
-
 class RegistrationService {
   final AuthMethods _authMethods = AuthMethods();
   // Methods for patient and doctor registration
@@ -16,7 +15,7 @@ class RegistrationService {
     required String doctorId,
     required String prescriptionId,
     required String gloveId,
-    
+    required String gloveName,
   }) async {
     String uid = await _authMethods.registerUser(
       fullName,
@@ -28,7 +27,8 @@ class RegistrationService {
       password,
       "Patient",
     );
-    await _authMethods.registerPatient(uid, emergencyContact, doctorId, prescriptionId, gloveId, DateTime.now(), DateTime.now());
+    await _authMethods.registerPatient(uid, emergencyContact, doctorId,
+        prescriptionId, gloveId, gloveName, DateTime.now(), DateTime.now());
   }
 
   Future<void> registerNewDoctor({
@@ -53,6 +53,7 @@ class RegistrationService {
       password,
       "Doctor",
     );
-    await _authMethods.registerDoctor(uid , nationalId, description, licenseNumber, []);
+    await _authMethods
+        .registerDoctor(uid, nationalId, description, licenseNumber, []);
   }
 }

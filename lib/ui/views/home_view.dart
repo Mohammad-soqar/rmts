@@ -5,9 +5,10 @@ import 'package:rmts/ui/views/bluetooth_view.dart';
 import 'package:rmts/ui/views/bpm_detail_screen.dart';
 import 'package:rmts/ui/views/glove_management/add_edit_glove.dart';
 import 'package:rmts/ui/views/glove_management/glove_view.dart';
-import 'package:rmts/ui/views/reports_view.dart';
+import 'package:rmts/ui/views/mpu_data_view.dart';
 import 'package:rmts/ui/widgets/app_button.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
+import 'package:rmts/viewmodels/auth/find_glove_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
 import 'package:rmts/ui/widgets/variable_card.dart';
 import 'package:rmts/ui/views/mpu_detail_screen.dart';
@@ -51,6 +52,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final authViewModel = Provider.of<AuthViewModel>(context);
     final gloveViewModel = Provider.of<GloveViewModel>(context);
+    final findGloveViewmodel = Provider.of<FindGloveViewmodel>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -140,8 +142,22 @@ class _HomeViewState extends State<HomeView> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const BluetoothView()));
               },
+            )
+
+            const SizedBox(height: 20),
+
+            CustomButton(
+              color: Theme.of(context).colorScheme.primary,
+              label: "Mpu Test",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MpuDataView()),
+                );
+              },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
+
             CustomButton(
               color: Theme.of(context).colorScheme.primary,
               label: "Add Glove Page",
@@ -152,16 +168,21 @@ class _HomeViewState extends State<HomeView> {
                         builder: (_) => const AddEditGloveView()));
               },
             ),
-            const SizedBox(height: 16),
+
+           
+
+            const SizedBox(height: 20),
             CustomButton(
               color: Theme.of(context).colorScheme.primary,
-              label: "Reports Page",
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const ReportsView()));
+              label: "connect Glove",
+              onPressed: () async {
+                await findGloveViewmodel.findGlove();
               },
             ),
-            const SizedBox(height: 16),
+           
+            const SizedBox(height: 20),
+            //  New Appointments Button
+
             CustomButton(
               color: Theme.of(context).colorScheme.primary,
               label: "Appointments",

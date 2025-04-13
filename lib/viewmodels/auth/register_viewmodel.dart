@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../data/services/registration_service.dart';
 
 class RegisterViewModel extends ChangeNotifier {
@@ -52,6 +53,7 @@ class RegisterViewModel extends ChangeNotifier {
           doctorId: doctorId,
           prescriptionId: '',
           gloveId: '',
+          gloveName: '',
         );
       } else if (role == 'Doctor') {
         final String licenseNumber = licenseNumberController.text;

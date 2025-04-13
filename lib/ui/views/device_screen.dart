@@ -58,7 +58,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
       }
     });
 
-    // Listen for MTU changes
+
     _mtuSubscription = widget.device.mtu.listen((value) {
       _mtuSize = value;
       if (mounted) {
@@ -95,12 +95,13 @@ class _DeviceScreenState extends State<DeviceScreen> {
   bool get isConnected =>
       _connectionState == BluetoothConnectionState.connected;
 
-  // Update real-time data display
+
   void _updateRealTimeData(String newData) {
     setState(() {
       realTimeData = newData;
     });
   }
+
 
   Future<void> _discoverServices() async {
     try {
@@ -113,6 +114,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
       print(e);
     }
   }
+
 
   void _findRealTimeDataCharacteristic() {
     bool found = false;
@@ -151,6 +153,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
       });
     });
   }
+
 
   Widget buildRealTimeData(BuildContext context) {
     return Padding(
@@ -229,6 +232,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
     }
   }
 
+
   /*
   
 str =
@@ -260,8 +264,18 @@ uuid128 =
       characteristic: c,
       descriptorTiles:
           c.descriptors.map((d) => DescriptorTile(descriptor: d)).toList(),
+
+  Widget buildRealTimeData(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text('Real-time Data: $realTimeData',
+          style: Theme.of(context).textTheme.bodyLarge),
+
     );
   }
+
+
+
 
   Widget buildSpinner(BuildContext context) {
     return const Padding(
@@ -338,7 +352,6 @@ uuid128 =
             trailing: buildGetServices(context),
           ),
           buildRealTimeData(context),
-          ..._buildServiceTiles(context, widget.device),
         ],
       ),
     );
