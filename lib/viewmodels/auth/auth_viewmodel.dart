@@ -3,15 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rmts/data/models/patient.dart' as patientModel;
 import 'package:rmts/data/models/user.dart' as userModel;
+import 'package:rmts/viewmodels/auth/find_glove_viewmodel.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  final FindGloveViewmodel _findGloveViewmodel = FindGloveViewmodel();
   userModel.User? _currentUser;
   patientModel.Patient? _currentPatient;
   bool _isLoading = false;
   String? errorMessage;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   patientModel.Patient? get currentPatient => _currentPatient;
 
@@ -23,40 +26,29 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   // Sign In Method
-  Future<void> signIn(String email, String password) async {
-    _setLoading(true);
+  Future<String> signIn(BuildContext context) async {
+    _isLoading = true;
+    notifyListeners();
+    String res = "Some error occurred";
+
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      String uid = userCredential.user!.uid;
-      DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(uid).get();
-
-      if (userDoc.exists) {
-        _currentUser = userModel.User.fromSnap(userDoc);
-        _clearError();
-        if (_currentUser!.role.toLowerCase() == 'patient') {
-          DocumentSnapshot patientDoc =
-              await _firestore.collection('patients').doc(uid).get();
-          if (patientDoc.exists) {
-            _currentPatient = patientModel.Patient.fromSnap(patientDoc);
-          } else {
-            _setError("Patient data not found.");
-          }
-        }
+      if (emailController.text.isNotEmpty ||
+          passwordController.text.isNotEmpty) {
+        await _auth.signInWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text);
+        _findGloveViewmodel.findGlove();
+        res = "success";
       } else {
-        _setError("User not found in database.");
+        res = "Please enter all the fields";
       }
     } catch (e) {
-      _setError("Login failed: ${e.toString()}");
+      res = e.toString();
     } finally {
-      _setLoading(false);
+      _isLoading = false;
+      notifyListeners();
     }
+    return res;
   }
-  
 
   // Auto Load User Session
   void _loadCurrentUser() {

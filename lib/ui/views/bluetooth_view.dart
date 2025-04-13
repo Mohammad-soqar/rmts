@@ -52,6 +52,7 @@ class _BluetoothViewState extends State<BluetoothView> {
     super.dispose();
   }
 
+  //TODO : remove this method to implement the new one
   Future onScanPressed() async {
     try {
       // `withServices` is required on iOS for privacy purposes, ignored on android.
@@ -71,7 +72,7 @@ class _BluetoothViewState extends State<BluetoothView> {
       setState(() {});
     }
   }
-
+  //TODO : remove this method to implement the new one
   Future onStopPressed() async {
     try {
       FlutterBluePlus.stopScan();
@@ -79,6 +80,15 @@ class _BluetoothViewState extends State<BluetoothView> {
       Snackbar.show(ABC.b, prettyException("Stop Scan Error:", e), success: false);
       print(e);
     }
+  }
+ Future onRefresh() {
+    if (_isScanning == false) {
+      FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
+    }
+    if (mounted) {
+      setState(() {});
+    }
+    return Future.delayed(Duration(milliseconds: 500));
   }
 
   void onConnectPressed(BluetoothDevice device) {
@@ -90,15 +100,7 @@ class _BluetoothViewState extends State<BluetoothView> {
     Navigator.of(context).push(route);
   }
 
-  Future onRefresh() {
-    if (_isScanning == false) {
-      FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
-    }
-    if (mounted) {
-      setState(() {});
-    }
-    return Future.delayed(Duration(milliseconds: 500));
-  }
+ 
 
   Widget buildScanButton(BuildContext context) {
     if (FlutterBluePlus.isScanningNow) {

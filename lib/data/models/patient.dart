@@ -6,9 +6,9 @@ class Patient {
   final String doctorId;
   final String prescriptionId;
   final String gloveId;
+  final String gloveName; //from doctor
   final DateTime lastSynced; //from glove
   final DateTime lastCheckIn; //from doctor
-
 
   const Patient({
     required this.uid,
@@ -16,11 +16,10 @@ class Patient {
     required this.doctorId,
     required this.prescriptionId,
     required this.gloveId,
+    required this.gloveName,
     required this.lastSynced,
     required this.lastCheckIn,
   });
-
-
 
   factory Patient.fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
@@ -40,9 +39,9 @@ class Patient {
       doctorId: snapshot['doctorId'],
       prescriptionId: snapshot['prescrptionId'],
       gloveId: snapshot['gloveId'],
-      lastSynced: parseDate(snapshot['lastSynced'] ) ?? DateTime.now(),
+      gloveName: snapshot['gloveName'],
+      lastSynced: parseDate(snapshot['lastSynced']) ?? DateTime.now(),
       lastCheckIn: parseDate(snapshot['lastCheckIn']) ?? DateTime.now(),
-    
     );
   }
 
@@ -55,10 +54,9 @@ class Patient {
       'doctorId': doctorId,
       'prescrptionId': prescriptionId,
       'gloveId': gloveId,
+      'gloveName': gloveName,
       'lastSynced': Timestamp.fromDate(lastSynced),
       'lastCheckIn': Timestamp.fromDate(lastCheckIn),
-
     };
-    
   }
 }

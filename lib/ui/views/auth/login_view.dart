@@ -1,21 +1,37 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/ui/views/home_view.dart';
-import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
-import 'package:rmts/ui/widgets/app_text_field.dart';
 import 'package:rmts/ui/widgets/app_button.dart';
+import 'package:rmts/ui/widgets/app_text_field.dart';
+import 'package:rmts/utils/snackbar.dart';
+import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 
 class LoginView extends StatefulWidget {
+  const LoginView({super.key});
+
   @override
   _LoginViewState createState() => _LoginViewState();
 }
 
 class _LoginViewState extends State<LoginView> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void _signIn() async {
+    if (_formKey.currentState!.validate()) {
+      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+      String res = await authViewModel.signIn(context);
+      if (res != 'success') {
+        showSnackBar(res, context);
+      } else {
+        if (!mounted) return;
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomeView()),
+          (route) => false,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final authViewModel = Provider.of<AuthViewModel>(context);
@@ -35,37 +51,34 @@ class _LoginViewState extends State<LoginView> {
                   "assets/rmt_logo.png",
                   fit: BoxFit.contain,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 AppTextField(
                   labelText: 'Email or Phone Number',
-                  controller: emailController,
+                  controller:
+                      Provider.of<AuthViewModel>(context).emailController,
                   keyboardType: TextInputType.emailAddress,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 AppTextField(
                   labelText: 'Password',
-                  controller: passwordController,
+                  controller:
+                      Provider.of<AuthViewModel>(context).passwordController,
                   isPassword: true,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 if (authViewModel.errorMessage != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: Text(
                       authViewModel.errorMessage!,
-                      style: TextStyle(color: Colors.red),
+                      style: const TextStyle(color: Colors.red),
                     ),
                   ),
                 const SizedBox(height: 10),
                 CustomButton(
                   color: Theme.of(context).colorScheme.primary,
                   label: "Login",
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeView()),
-                    );
-                  },
+                  onPressed: _signIn,
                 ),
                 const SizedBox(height: 40),
               ],
