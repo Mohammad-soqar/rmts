@@ -11,6 +11,7 @@ import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/register_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
 
+
 import 'viewmodels/reports_viewmodel.dart';
 
 void main() async {
@@ -34,6 +35,9 @@ void main() async {
                 GloveViewModel(gloveRepository)), // Glove Data Provider
         ChangeNotifierProvider(
             create: (_) => AppointmentViewmodel()), // Appointment Management
+       
+
+       
       ],
       child: const MyApp(),
     ),
@@ -74,6 +78,7 @@ class AuthWrapper extends StatelessWidget {
           }
           return const SplashView(); // Show Splash Screen
         }
+      
       },
     );
   }
