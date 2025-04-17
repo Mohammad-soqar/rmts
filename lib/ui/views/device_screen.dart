@@ -58,7 +58,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
       }
     });
 
-  
+
     _mtuSubscription = widget.device.mtu.listen((value) {
       _mtuSize = value;
       if (mounted) {
@@ -95,7 +95,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
   bool get isConnected =>
       _connectionState == BluetoothConnectionState.connected;
 
-  //TODO:  Update this method real-time data display
+
   void _updateRealTimeData(String newData) {
     setState(() {
       realTimeData = newData;
@@ -103,7 +103,6 @@ class _DeviceScreenState extends State<DeviceScreen> {
   }
 
 
-  //TODO:  Update this method 
   Future<void> _discoverServices() async {
     try {
       _services = await widget.device.discoverServices();
@@ -116,7 +115,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
     }
   }
 
-  //TODO:  Update this method 
+
   void _findRealTimeDataCharacteristic() {
     bool found = false;
     for (var service in _services) {
@@ -141,7 +140,6 @@ class _DeviceScreenState extends State<DeviceScreen> {
     }
   }
 
-  //TODO:  Update this method 
   // Listen for notifications on the characteristic
   void _setRealTimeDataListener() {
     _realTimeDataCharacteristic.setNotifyValue(true).then((_) {
@@ -155,6 +153,16 @@ class _DeviceScreenState extends State<DeviceScreen> {
       });
     });
   }
+
+
+  Widget buildRealTimeData(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text('Real-time Data: $realTimeData',
+          style: Theme.of(context).textTheme.bodyLarge),
+    );
+  }
+
   Future onConnectPressed() async {
     try {
       await widget.device.connectAndUpdateStream();
@@ -224,11 +232,45 @@ class _DeviceScreenState extends State<DeviceScreen> {
     }
   }
 
+
+  /*
+  
+str =
+"1801"
+str128 =
+"00001801-0000-1000-8000-00805f9b34fb"
+uuid =
+"1801"
+uuid128 =
+"00001801-0000-1000-8000-00805f9b34fb"
+  */
+
+  List<Widget> _buildServiceTiles(BuildContext context, BluetoothDevice d) {
+    return _services
+        .where((s) =>
+            s.uuid.toString() != "1801" &&
+            s.uuid.toString() != "1800") // Filter out default services
+        .map((s) {
+      return ServiceTile(
+        service: s,
+        characteristicTiles:
+            s.characteristics.map((c) => _buildCharacteristicTile(c)).toList(),
+      );
+    }).toList();
+  }
+
+  CharacteristicTile _buildCharacteristicTile(BluetoothCharacteristic c) {
+    return CharacteristicTile(
+      characteristic: c,
+      descriptorTiles:
+          c.descriptors.map((d) => DescriptorTile(descriptor: d)).toList(),
+
   Widget buildRealTimeData(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text('Real-time Data: $realTimeData',
           style: Theme.of(context).textTheme.bodyLarge),
+
     );
   }
 
