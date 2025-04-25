@@ -1,0 +1,68 @@
+// ignore_for_file: deprecated_member_use
+
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+
+class GloveDataTileWidget extends StatelessWidget {
+  final String sensorName;
+  final String sensorIcon;
+  final String lastResult;
+
+  const GloveDataTileWidget({
+    required this.sensorName,
+    required this.sensorIcon,
+    required this.lastResult,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 100,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.onInverseSurface,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () {
+              // Handle tap event here
+            },
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).colorScheme.surfaceVariant,
+              ),
+              child: SvgPicture.asset(
+                sensorIcon,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.primary,
+                  BlendMode.srcIn,
+                ),
+                width: 40,
+                height: 40,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+           Text(
+            lastResult,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            sensorName,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
