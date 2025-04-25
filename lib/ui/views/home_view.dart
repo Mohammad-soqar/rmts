@@ -8,6 +8,7 @@ import 'package:rmts/ui/views/glove_management/glove_view.dart';
 import 'package:rmts/ui/views/mpu_data_view.dart';
 import 'package:rmts/ui/views/ppg_data_view.dart';
 import 'package:rmts/ui/widgets/app_button.dart';
+import 'package:rmts/ui/widgets/glove_data.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/find_glove_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
@@ -79,13 +80,14 @@ class _HomeViewState extends State<HomeView> {
             const SizedBox(height: 20),
 
             // Patient Information
-            const Text("Variables", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
+            /* const Text("Variables", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10), */
             Wrap(
-              spacing: 12,
-              runSpacing: 12,
+              spacing: 16,
+              runSpacing: 16,
               children: [
-                VitalsCard(
+                GloveDataWidget(), // Custom widget to display glove data
+                /* VitalsCard(
                   label: "Heart Rate",
                   value: 120, // replace with live value
                   unit: "bpm",
@@ -101,6 +103,7 @@ class _HomeViewState extends State<HomeView> {
                     );
                   },
                 ),
+                
                 VitalsCard(
                   label: "Wrist Mobility",
                   value: 120, // replacs with live value
@@ -117,7 +120,7 @@ class _HomeViewState extends State<HomeView> {
                           ),
                     );
                   },
-                ),
+                ), */
               ],
             ),
             
@@ -143,7 +146,7 @@ class _HomeViewState extends State<HomeView> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const BluetoothView()));
               },
-            )
+            ),
 
             const SizedBox(height: 20),
 
