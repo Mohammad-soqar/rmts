@@ -31,7 +31,7 @@ class GloveDataTileWidget extends StatelessWidget {
               // Handle tap event here
             },
             child: Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Theme.of(context).colorScheme.surfaceVariant,
@@ -42,23 +42,23 @@ class GloveDataTileWidget extends StatelessWidget {
                   Theme.of(context).colorScheme.primary,
                   BlendMode.srcIn,
                 ),
-                width: 40,
-                height: 40,
+                width: 36,
+                height: 36,
               ),
             ),
           ),
           const SizedBox(height: 8),
-           Text(
+          Text(
             lastResult,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
             sensorName,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
           ),
         ],
