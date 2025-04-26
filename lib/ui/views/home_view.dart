@@ -2,19 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/ui/views/appointment_management/appointment_view.dart';
 import 'package:rmts/ui/views/bluetooth_view.dart';
-import 'package:rmts/ui/views/bpm_detail_screen.dart';
 import 'package:rmts/ui/views/glove_management/add_edit_glove.dart';
 import 'package:rmts/ui/views/glove_management/glove_view.dart';
-import 'package:rmts/ui/views/mpu_data_view.dart';
-import 'package:rmts/ui/views/ppg_data_view.dart';
-import 'package:rmts/ui/widgets/app_button.dart';
+import 'package:rmts/ui/views/sensors/mpu_data_view.dart';
+import 'package:rmts/ui/views/sensors/ppg_data_view.dart';
 import 'package:rmts/ui/widgets/glove_data.dart';
+import 'package:rmts/ui/widgets/inputs/app_button.dart';
+import 'package:rmts/ui/widgets/pill_tile.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/find_glove_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
-import 'package:rmts/ui/widgets/variable_card.dart';
-import 'package:rmts/ui/views/mpu_detail_screen.dart';
-
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -36,13 +33,8 @@ class _HomeViewState extends State<HomeView> {
 
     if (authViewModel.currentPatient != null) {
       final patientId = authViewModel.currentPatient!.uid;
-
-      print("Fetching data for patient ID: $patientId");
-
       // Fetch Glove Data
       if (authViewModel.currentPatient!.gloveId.isNotEmpty) {
-        print(
-            "Fetching glove data for: ${authViewModel.currentPatient!.gloveId}");
         await gloveViewModel.fetchGlove(authViewModel.currentPatient!.gloveId);
       }
     } else {
@@ -62,8 +54,8 @@ class _HomeViewState extends State<HomeView> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              authViewModel.signOut();
+            onPressed: () async {
+              await authViewModel.signOut();
             },
           ),
         ],
@@ -73,60 +65,29 @@ class _HomeViewState extends State<HomeView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Welcome, ${authViewModel.currentUser?.fullName ?? ''}!',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 20),
+            const GloveDataWidget(),
 
-            // Patient Information
-            /* const Text("Variables", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10), */
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
+            const SizedBox(height: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GloveDataWidget(), // Custom widget to display glove data
-                /* VitalsCard(
-                  label: "Heart Rate",
-                  value: 120, // replace with live value
-                  unit: "bpm",
-                  icon: Icons.favorite,
-                  iconColor: Colors.red,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => BPMDetailScreen(
-                            initialBPM: 120), // replace with live value
+                Text(
+                  'Actions',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
-                    );
-                  },
                 ),
-                
-                VitalsCard(
-                  label: "Wrist Mobility",
-                  value: 120, // replacs with live value
-                  unit: "degrees",
-
-                  icon: Icons.accessibility,
-                  iconColor: const Color.fromARGB(255, 95, 173, 236),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => MPUDetailScreen(
-                              initialAngle: 42) // replace with live value
-                          ),
-                    );
-                  },
-                ), */
+                const SizedBox(height: 16),
+                const PillTileWidget(
+                    pillIcon: "assets/icons/Vibration.svg",
+                    pillText: "Vibrate for relief"),
+                const SizedBox(height: 16),
+                const PillTileWidget(
+                    pillIcon: "assets/icons/Calendar_Add.svg",
+                    pillText: "Book an appointment"),
               ],
             ),
-            
-
             const SizedBox(height: 30),
-
             if (gloveViewModel.currentGlove != null)
               CustomButton(
                 color: Theme.of(context).colorScheme.primary,
@@ -162,8 +123,7 @@ class _HomeViewState extends State<HomeView> {
             ),
             const SizedBox(height: 20),
 
-
-             CustomButton(
+            CustomButton(
               color: Theme.of(context).colorScheme.primary,
               label: "Ppg Test",
               onPressed: () {
@@ -186,8 +146,6 @@ class _HomeViewState extends State<HomeView> {
               },
             ),
 
-           
-
             const SizedBox(height: 20),
             CustomButton(
               color: Theme.of(context).colorScheme.primary,
@@ -196,7 +154,7 @@ class _HomeViewState extends State<HomeView> {
                 await findGloveViewmodel.findGlove();
               },
             ),
-           
+
             const SizedBox(height: 20),
             //  New Appointments Button
 
