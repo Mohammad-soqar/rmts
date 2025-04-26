@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rmts/ui/views/home_view.dart';
-import 'package:rmts/ui/widgets/app_button.dart';
-import 'package:rmts/ui/widgets/app_text_field.dart';
+import 'package:rmts/ui/responsive/mobile_screen_layout.dart';
+import 'package:rmts/ui/widgets/inputs/app_button.dart';
+import 'package:rmts/ui/widgets/inputs/app_text_field.dart';
 import 'package:rmts/utils/snackbar.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 
@@ -25,7 +25,7 @@ class _LoginViewState extends State<LoginView> {
       } else {
         if (!mounted) return;
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomeView()),
+          MaterialPageRoute(builder: (context) => const MobileScreenLayout()),
           (route) => false,
         );
       }

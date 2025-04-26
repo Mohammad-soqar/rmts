@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rmts/ui/views/auth/login_view.dart';
-import 'package:rmts/ui/widgets/app_button.dart';
+import 'package:rmts/ui/widgets/inputs/app_button.dart';
 
 class SplashView extends StatelessWidget {
   const SplashView({super.key});
