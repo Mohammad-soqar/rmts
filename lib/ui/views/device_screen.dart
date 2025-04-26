@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:rmts/ui/widgets/characteristic_tile.dart';
-import 'package:rmts/ui/widgets/descriptor_tile.dart';
-import 'package:rmts/ui/widgets/service_tile.dart';
+import 'package:rmts/ui/widgets/bluetooth/characteristic_tile.dart';
+import 'package:rmts/ui/widgets/bluetooth/descriptor_tile.dart';
+import 'package:rmts/ui/widgets/bluetooth/service_tile.dart';
 import 'package:rmts/utils/extra.dart';
 import 'package:rmts/utils/snackbar.dart';
 
