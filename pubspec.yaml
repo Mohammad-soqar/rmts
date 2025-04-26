@@ -67,12 +67,16 @@ flutter:
   assets:
 
     - "assets/rmt_logo.png"
-
     - "assets/splashScreen.png"
-    - "assets/Flex.svg"
-    - "assets/hand.svg"
-    - "assets/Heart.svg"
-    - "assets/Pressure.svg"
+    - "assets/icons/House_01.svg"
+    - "assets/icons/Glove.svg"
+    - "assets/icons/UserAvatar.svg"
+    - "assets/icons/Flex.svg"
+    - "assets/icons/hand.svg"
+    - "assets/icons/Vibration.svg"
+    - "assets/icons/Calendar_Add.svg"
+    - "assets/icons/Heart.svg"
+    - "assets/icons/Pressure.svg"
   #   - images/a_dot_ham.jpeg
   # An image asset can refer   to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
