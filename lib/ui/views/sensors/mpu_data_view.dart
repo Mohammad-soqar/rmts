@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rmts/ui/views/mpu_test_view.dart';
+import 'package:rmts/ui/views/sensors/mpu_test_view.dart';
 import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 
 class MpuDataView extends StatefulWidget {

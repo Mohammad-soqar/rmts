@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rmts/ui/views/ppg_test_view.dart';
+import 'package:rmts/ui/views/sensors/ppg_test_view.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
 
 class PpgDataView extends StatefulWidget {
