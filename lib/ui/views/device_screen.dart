@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:rmts/ui/widgets/characteristic_tile.dart';
-import 'package:rmts/ui/widgets/descriptor_tile.dart';
-import 'package:rmts/ui/widgets/service_tile.dart';
+import 'package:rmts/ui/widgets/bluetooth/characteristic_tile.dart';
+import 'package:rmts/ui/widgets/bluetooth/descriptor_tile.dart';
+import 'package:rmts/ui/widgets/bluetooth/service_tile.dart';
 import 'package:rmts/utils/extra.dart';
 import 'package:rmts/utils/snackbar.dart';
 
@@ -245,34 +245,9 @@ uuid128 =
 "00001801-0000-1000-8000-00805f9b34fb"
   */
 
-  List<Widget> _buildServiceTiles(BuildContext context, BluetoothDevice d) {
-    return _services
-        .where((s) =>
-            s.uuid.toString() != "1801" &&
-            s.uuid.toString() != "1800") // Filter out default services
-        .map((s) {
-      return ServiceTile(
-        service: s,
-        characteristicTiles:
-            s.characteristics.map((c) => _buildCharacteristicTile(c)).toList(),
-      );
-    }).toList();
-  }
 
-  CharacteristicTile _buildCharacteristicTile(BluetoothCharacteristic c) {
-    return CharacteristicTile(
-      characteristic: c,
-      descriptorTiles:
-          c.descriptors.map((d) => DescriptorTile(descriptor: d)).toList(),
 
-  Widget buildRealTimeData(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text('Real-time Data: $realTimeData',
-          style: Theme.of(context).textTheme.bodyLarge),
 
-    );
-  }
 
 
 
@@ -371,3 +346,5 @@ uuid128 =
     );
   }
 }
+
+ 

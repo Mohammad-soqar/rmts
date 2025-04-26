@@ -34,7 +34,7 @@ class _AppTextFieldState extends State<AppTextField> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             SizedBox(height: 5), 

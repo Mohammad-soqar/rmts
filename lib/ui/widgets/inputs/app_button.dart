@@ -17,7 +17,6 @@ class CustomButton extends StatelessWidget {
     //add elevated button with width Infinity
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(

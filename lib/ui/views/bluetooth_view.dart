@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:rmts/ui/views/device_screen.dart';
-import 'package:rmts/ui/widgets/scan_result_tile.dart';
-import 'package:rmts/ui/widgets/system_device_tile.dart';
+import 'package:rmts/ui/widgets/bluetooth/scan_result_tile.dart';
+import 'package:rmts/ui/widgets/bluetooth/system_device_tile.dart';
 import 'package:rmts/utils/extra.dart';
 import 'package:rmts/utils/snackbar.dart';
 

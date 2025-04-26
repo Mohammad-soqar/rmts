@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rmts/ui/views/mpu_test_view.dart';
-import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
+import 'package:rmts/ui/views/sensors/ppg_test_view.dart';
+import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
 
-class MpuDataView extends StatefulWidget {
-  const MpuDataView({super.key});
+class PpgDataView extends StatefulWidget {
+  const PpgDataView({super.key});
 
   @override
-  State<MpuDataView> createState() => _MpuDataViewState();
+  State<PpgDataView> createState() => _PpgDataViewState();
 }
 
-class _MpuDataViewState extends State<MpuDataView> {
+class _PpgDataViewState extends State<PpgDataView> {
   @override
   void initState() {
     super.initState();
     // Load data on screen open
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<MpuTestViewModel>(context, listen: false).loadMpuData();
+      Provider.of<PpgTestViewModel>(context, listen: false).loadPpgData();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<MpuTestViewModel>(context);
+    final vm = Provider.of<PpgTestViewModel>(context);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Motion Sensor Results')),
@@ -34,12 +34,12 @@ class _MpuDataViewState extends State<MpuDataView> {
               onPressed: () async {
                 final result = await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const MpuTestView()),
+                  MaterialPageRoute(builder: (_) => const PpgTestView()),
                 );
                 if (result == true) {
                   // This triggers rebuild of the screen and reloads data
-                  Provider.of<MpuTestViewModel>(context, listen: false)
-                      .loadMpuData();
+                  Provider.of<PpgTestViewModel>(context, listen: false)
+                      .loadPpgData();
                   setState(() {}); // 🔁 triggers UI rebuild
                 }
               },
@@ -47,15 +47,15 @@ class _MpuDataViewState extends State<MpuDataView> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: vm.mpuDataList.isEmpty
+              child: vm.ppgDataList.isEmpty
                   ? const Center(child: Text('No data found'))
                   : ListView.builder(
-                      itemCount: vm.mpuDataList.length,
+                      itemCount: vm.ppgDataList.length,
                       itemBuilder: (context, index) {
-                        final data = vm.mpuDataList[index];
+                        final data = vm.ppgDataList[index];
                         return ListTile(
                           title: Text(
-                              "Raised: ${data.raised}, Lowered: ${data.lowered}"),
+                              "bpm: ${data.bpm}"),
                           subtitle: Text("Timestamp: ${data.timestamp}"),
                         );
                       },
