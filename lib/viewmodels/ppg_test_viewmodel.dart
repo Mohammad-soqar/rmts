@@ -22,6 +22,7 @@ class PpgTestViewModel extends ChangeNotifier {
 Future<void> startPpgTest(String userId) async {
   isTesting = true;
   result = null;
+  var error = null; // ⬅️ Add error field to display errors separately if you want
   notifyListeners();
 
   final completer = Completer<void>();
@@ -47,11 +48,21 @@ Future<void> startPpgTest(String userId) async {
       if (!completer.isCompleted) {
         completer.complete();
       }
+    } else if (data.contains("Error: No Glove Detected")) {
+      // ⛔ Handle glove not worn error
+      isTesting = false;
+      error = "Please wear the glove properly and try again."; // ⬅️ Optional if you have UI for error
+      notifyListeners();
+
+      if (!completer.isCompleted) {
+        completer.completeError(Exception("No glove detected"));
+      }
     }
   });
 
   await BleService.sendCommand("startPPGTest");
   return completer.future;
 }
+
 
 }
