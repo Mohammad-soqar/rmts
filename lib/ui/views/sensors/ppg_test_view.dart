@@ -12,6 +12,7 @@ class PpgTestView extends StatefulWidget {
 class _PpgTestViewState extends State<PpgTestView>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  bool errorShown = false; // ✅ To avoid showing multiple dialogs
 
   @override
   void initState() {
@@ -23,7 +24,11 @@ class _PpgTestViewState extends State<PpgTestView>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<PpgTestViewModel>(context, listen: false)
-          .startPpgTest("userId"); // Replace with real userId
+          .startPpgTest("userId") // Replace with real userId
+          .catchError((error) {
+        // ✅ Catch error directly here and show dialog
+        _showErrorDialog("Please wear the glove properly and try again.");
+      });
     });
   }
 
@@ -31,6 +36,28 @@ class _PpgTestViewState extends State<PpgTestView>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _showErrorDialog(String message) {
+    if (errorShown) return;
+    errorShown = true;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Error"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close dialog
+              Navigator.of(context).pop(false); // Exit screen
+            },
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildHeartAnimation() {
@@ -95,7 +122,7 @@ class _PpgTestViewState extends State<PpgTestView>
                         ),
                       ],
                     )
-                  : const Text("Something went wrong"),
+                  : const SizedBox(), // Empty when no result/error
         ),
       ),
     );
