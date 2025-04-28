@@ -1,14 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rmts/ui/views/sensors/ppg_test_view.dart';
 import 'package:rmts/ui/widgets/glove_data_tile.dart';
 import 'package:rmts/ui/widgets/inputs/app_button.dart';
+import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
 
-class GloveDataWidget extends StatelessWidget {
+class GloveDataWidget extends StatefulWidget {
   const GloveDataWidget({
     super.key,
   });
 
   @override
+  State<GloveDataWidget> createState() => _GloveDataWidgetState();
+}
+
+class _GloveDataWidgetState extends State<GloveDataWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // Load data on screen open
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<PpgTestViewModel>(context, listen: false).loadPpgData();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<PpgTestViewModel>(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -42,23 +61,37 @@ class GloveDataWidget extends StatelessWidget {
               true, // Important: Makes GridView take only the needed height
           physics:
               const NeverScrollableScrollPhysics(), // Important: Disables scrolling
-          children: const [
+          children: [
             GloveDataTileWidget(
               sensorName: 'Heart Rate',
               sensorIcon: 'assets/icons/Heart.svg',
-              lastResult: '86 BPM',
+              lastResult: vm.ppgDataList.isEmpty
+                  ? 'No data found'
+                  : '${vm.ppgDataList.last.bpm} BPM',
+              onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PpgTestView()),
+                );
+                if (result == true) {
+                  // This triggers rebuild of the screen and reloads data
+                  Provider.of<PpgTestViewModel>(context, listen: false)
+                      .loadPpgData();
+                  setState(() {}); // 🔁 triggers UI rebuild
+                }
+              },
             ),
-            GloveDataTileWidget(
+            const GloveDataTileWidget(
               sensorName: 'Motion',
               sensorIcon: 'assets/icons/hand.svg',
               lastResult: '87° 78°',
             ),
-            GloveDataTileWidget(
+            const GloveDataTileWidget(
               sensorName: 'Pressure',
               sensorIcon: 'assets/icons/Pressure.svg',
               lastResult: 'Light Grip',
             ),
-            GloveDataTileWidget(
+            const GloveDataTileWidget(
               sensorName: 'Finger Flex',
               sensorIcon: 'assets/icons/Flex.svg',
               lastResult: 'Half-Bent',

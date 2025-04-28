@@ -108,7 +108,14 @@ class _HomeViewState extends State<HomeView> {
                     MaterialPageRoute(builder: (_) => const BluetoothView()));
               },
             ),
-
+            const SizedBox(height: 20),
+            CustomButton(
+              color: Theme.of(context).colorScheme.primary,
+              label: "Connect Glove",
+              onPressed: () async {
+                await findGloveViewmodel.findGlove();
+              },
+            ),
             const SizedBox(height: 20),
 
             CustomButton(
