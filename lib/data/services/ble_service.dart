@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BleService {
   static BluetoothCharacteristic? _commandChar;
   static BluetoothCharacteristic? _notifyChar;
+  static StreamSubscription<List<int>>? _notifySubscription;
+  static String? lastData; // ✅ static here
 
   static void setCharacteristics({
     required BluetoothCharacteristic commandCharacteristic,
@@ -27,14 +31,21 @@ class BleService {
         withoutResponse: _commandChar!.properties.writeWithoutResponse,
       );
     } catch (e) {
-      // Handle the error, e.g., log it or rethrow
       print('Error sending command: $e');
     }
   }
 
   static void onDataReceived(Function(String) callback) {
-    _notifyChar?.lastValueStream.listen((value) {
+    _notifySubscription?.cancel(); // Cancel old listener if exists
+    _notifySubscription = _notifyChar?.lastValueStream.listen((value) {
       final data = String.fromCharCodes(value);
+
+      if (lastData == data) {
+        print('⚠️ Duplicate BLE data detected, ignoring.');
+        return;
+      }
+      lastData = data;
+
       callback(data);
     });
   }
