@@ -25,7 +25,6 @@ class _PpgDataViewState extends State<PpgDataView> {
     final vm = Provider.of<PpgTestViewModel>(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Motion Sensor Results')),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -54,8 +53,7 @@ class _PpgDataViewState extends State<PpgDataView> {
                       itemBuilder: (context, index) {
                         final data = vm.ppgDataList[index];
                         return ListTile(
-                          title: Text(
-                              "bpm: ${data.bpm}"),
+                          title: Text("bpm: ${data.bpm}"),
                           subtitle: Text("Timestamp: ${data.timestamp}"),
                         );
                       },
