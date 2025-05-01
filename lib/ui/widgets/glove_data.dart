@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/ui/views/sensors/mpu_test_view.dart';
 import 'package:rmts/ui/views/sensors/ppg_test_view.dart';
 import 'package:rmts/ui/widgets/glove_data_tile.dart';
 import 'package:rmts/ui/widgets/inputs/app_button.dart';
+import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
 
 class GloveDataWidget extends StatefulWidget {
@@ -81,10 +83,26 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
                 }
               },
             ),
-            const GloveDataTileWidget(
+             GloveDataTileWidget(
               sensorName: 'Motion',
               sensorIcon: 'assets/icons/hand.svg',
-              lastResult: '87° 78°',
+              lastResult: 
+                  Provider.of<MpuTestViewModel>(context).mpuDataList.isEmpty
+                      ? 'No data found'
+                      : '${Provider.of<MpuTestViewModel>(context).mpuDataList.last.raised} '"°"' ${Provider.of<MpuTestViewModel>(context).mpuDataList.last.lowered} '"°"'',
+               onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MpuTestView()),
+                );
+                if (result == true) {
+                  // This triggers rebuild of the screen and reloads data
+                  Provider.of<MpuTestViewModel>(context, listen: false)
+                      .loadMpuData();
+                  setState(() {}); // 🔁 triggers UI rebuild
+                }
+              },
+
             ),
             const GloveDataTileWidget(
               sensorName: 'Pressure',
