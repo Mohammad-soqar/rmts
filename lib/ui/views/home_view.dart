@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/data/models/enums/profile_action_type.dart';
 import 'package:rmts/ui/views/glove_management/glove_view.dart';
+import 'package:rmts/ui/views/sensors/mpu_data_view.dart';
 import 'package:rmts/ui/widgets/debug_buttons.dart';
 import 'package:rmts/ui/widgets/glove_data.dart';
 import 'package:rmts/ui/widgets/home/custom_app_bar.dart';
@@ -45,6 +46,7 @@ class _HomeViewState extends State<HomeView> {
     final gloveViewModel = Provider.of<GloveViewModel>(context);
 
     return Scaffold(
+
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
