@@ -5,7 +5,6 @@ import 'package:rmts/ui/views/bluetooth_view.dart';
 import 'package:rmts/ui/views/glove_management/add_edit_glove.dart';
 import 'package:rmts/ui/views/glove_management/glove_view.dart';
 import 'package:rmts/ui/views/sensors/mpu_data_view.dart';
-import 'package:rmts/ui/views/sensors/ppg_data_view.dart';
 import 'package:rmts/ui/widgets/glove_data.dart';
 import 'package:rmts/ui/widgets/inputs/app_button.dart';
 import 'package:rmts/ui/widgets/pill_tile.dart';
@@ -63,6 +62,7 @@ class _HomeViewState extends State<HomeView> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
+          
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const GloveDataWidget(),
@@ -128,18 +128,7 @@ class _HomeViewState extends State<HomeView> {
                 );
               },
             ),
-            const SizedBox(height: 20),
 
-            CustomButton(
-              color: Theme.of(context).colorScheme.primary,
-              label: "Ppg Test",
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PpgDataView()),
-                );
-              },
-            ),
             const SizedBox(height: 20),
 
             CustomButton(

@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:rmts/data/models/hive/mpu_data.dart';
 import 'package:rmts/data/services/ble_service.dart';
+import 'dart:async';
+
+enum MpuTestStage {
+  idle,
+  waitingRaise,
+  waitingLower,
+  done,
+}
 
 class MpuTestViewModel extends ChangeNotifier {
   bool isTesting = false;
   MpuData? result;
+  MpuTestStage stage = MpuTestStage.idle;
+
 
   List<MpuData> _mpuDataList = [];
-
   List<MpuData> get mpuDataList => _mpuDataList;
 
   Future<void> loadMpuData() async {
@@ -20,30 +29,42 @@ class MpuTestViewModel extends ChangeNotifier {
   Future<void> startMpuTest(String userId) async {
     isTesting = true;
     result = null;
+    stage = MpuTestStage.waitingRaise;
+    String error; 
     notifyListeners();
-
     await BleService.sendCommand("startMPUTest");
 
+    
     BleService.onDataReceived((data) async {
-      if (data.startsWith("MPUResult:")) {
+      if(!isTesting) return;
+      if(data == "RAISED_CAPTURED"){
+        stage = MpuTestStage.waitingLower;
+        notifyListeners();
+        return;
+      }
+      if(data.startsWith("MPUResult:")){
         final parts = data.replaceFirst("MPUResult:", "").split(",");
         final raised = double.parse(parts[0]);
         final lowered = double.parse(parts[1]);
-
+        
         final mpu = MpuData(
           raised: raised,
           lowered: lowered,
           timestamp: DateTime.now(),
         );
-
         final box = Hive.box<MpuData>('mpu_data');
-        if (box.isNotEmpty) await box.clear(); // await the clear
-        await box.add(mpu); // await the add
-
+        if (box.isNotEmpty) await box.clear();
+        await box.add(mpu);
+        
         result = mpu;
         isTesting = false;
-        notifyListeners(); // notify for result view
+        stage = MpuTestStage.done;
+        notifyListeners();
+        await BleService.sendCommand("stopMPU");
       }
-    });
+   
+
+    
+    });// notify for result view
   }
 }
