@@ -7,6 +7,7 @@ class GloveDataTileWidget extends StatelessWidget {
   final String sensorName;
   final String sensorIcon;
   final String lastResult;
+  
 
   final Function()? onTap;
 
@@ -53,16 +54,17 @@ class GloveDataTileWidget extends StatelessWidget {
             Text(
               lastResult,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
             ),
             const SizedBox(height: 8),
             Text(
               sensorName,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
             ),
+           
           ],
         ),
       ),

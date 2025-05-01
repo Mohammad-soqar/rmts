@@ -16,6 +16,7 @@ import 'package:rmts/viewmodels/appointment_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/find_glove_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/register_viewmodel.dart';
+import 'package:rmts/viewmodels/auth/user_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
 import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
@@ -24,20 +25,20 @@ import 'viewmodels/reports_viewmodel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Ensure Firebase is initialized
+  await Firebase.initializeApp(); 
   await Hive.initFlutter();
-  Hive.registerAdapter(MpuDataAdapter()); // Register Hive adapter
+  Hive.registerAdapter(MpuDataAdapter());
   await Hive.openBox<MpuData>('mpu_data');
-  Hive.registerAdapter(PpgDataAdapter()); // Register Hive adapter
+  Hive.registerAdapter(PpgDataAdapter());
   await Hive.openBox<PpgData>('ppg_data');
 
   final gloveRepository = GloveRepository();
 
-  // Run the app with MultiProvider for state management
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SensorDataService()),
+        ChangeNotifierProvider(create: (_) => UserViewModel()..fetchUserData()),
         ChangeNotifierProvider(create: (_) => MpuTestViewModel()),
         ChangeNotifierProvider(create: (_) => PpgTestViewModel()),
         ChangeNotifierProvider(
