@@ -85,6 +85,8 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
               sensorName: 'Motion',
               sensorIcon: 'assets/icons/hand.svg',
               lastResult: '87° 78°',
+             
+              
             ),
             const GloveDataTileWidget(
               sensorName: 'Pressure',
