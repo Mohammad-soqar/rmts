@@ -32,6 +32,27 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
+//TODO: Remove this function in production
+ void _autoSignIn() async {
+  final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+  
+  authViewModel.passwordController.text = "Soqar4ever101@";
+  authViewModel.emailController.text = "mnsoqar2@gmail.com";
+
+  String res = await authViewModel.signIn(context);
+
+  if (res != 'success') {
+    showSnackBar(res, context);
+  } else {
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const MobileScreenLayout()),
+      (route) => false,
+    );
+  }
+}
+
+
   @override
   Widget build(BuildContext context) {
     final authViewModel = Provider.of<AuthViewModel>(context);
@@ -79,6 +100,13 @@ class _LoginViewState extends State<LoginView> {
                   color: Theme.of(context).colorScheme.primary,
                   label: "Login",
                   onPressed: _signIn,
+                ),
+                //TODO: Remove this button in production
+                const SizedBox(height: 10),
+                 CustomButton(
+                  color: Theme.of(context).colorScheme.primary,
+                  label: "Auto Login Debug only",
+                  onPressed:   _autoSignIn,
                 ),
                 const SizedBox(height: 40),
               ],
