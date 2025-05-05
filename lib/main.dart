@@ -27,7 +27,7 @@ import 'viewmodels/reports_viewmodel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); 
+  await Firebase.initializeApp();
   await Hive.initFlutter();
   Hive.registerAdapter(MpuDataAdapter());
   await Hive.openBox<MpuData>('mpu_data');
