@@ -5,6 +5,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/data/models/hive/mpu_data.dart';
 import 'package:rmts/data/models/hive/ppg_data.dart';
+import 'package:rmts/data/models/hive/flex_data.dart';
 import 'package:rmts/data/repositories/glove_repository.dart';
 import 'package:rmts/data/services/sensor_data_service.dart';
 import 'package:rmts/ui/responsive/mobile_screen_layout.dart';
@@ -19,6 +20,7 @@ import 'package:rmts/viewmodels/auth/register_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
 import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
+import 'package:rmts/viewmodels/flex_test_viewmodel.dart';
 
 import 'viewmodels/reports_viewmodel.dart';
 
@@ -30,6 +32,8 @@ void main() async {
   await Hive.openBox<MpuData>('mpu_data');
   Hive.registerAdapter(PpgDataAdapter()); // Register Hive adapter
   await Hive.openBox<PpgData>('ppg_data');
+  Hive.registerAdapter(FlexDataAdapter()); // Register Hive adapter
+  await Hive.openBox<FlexData>('flex_data');
 
   final gloveRepository = GloveRepository();
 
@@ -40,6 +44,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SensorDataService()),
         ChangeNotifierProvider(create: (_) => MpuTestViewModel()),
         ChangeNotifierProvider(create: (_) => PpgTestViewModel()),
+        ChangeNotifierProvider(create: (_) => FlexTestViewModel()),
         ChangeNotifierProvider(
             create: (_) => AuthViewModel()), // Authentication Provider
         ChangeNotifierProvider(
