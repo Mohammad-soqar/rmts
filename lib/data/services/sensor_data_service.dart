@@ -1,22 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:rmts/data/models/hive/mpu_data.dart';
-import 'package:firebase_database/firebase_database.dart';
-
+import 'package:rmts/data/models/hive/ppg_data.dart';
 
 class SensorDataService extends ChangeNotifier {
-  final _mpuBox = Hive.box<MpuData>('mpu_data');
-  final _firebaseRef = FirebaseDatabase.instance.ref();
+  final timestamp = DateTime.now().millisecondsSinceEpoch;
 
-  List<MpuData> get allMpuReadings => _mpuBox.values.toList();
+  Future<void> addPpgData(PpgData ppgdata, String patientId) async {
+    await FirebaseFirestore.instance
+        .collection('patients')
+        .doc(patientId)
+        .collection('sensors')
+        .doc('ppg_data')
+        .set({
+      'bpm': ppgdata.bpm,
+      'timestamp': ppgdata.timestamp.millisecondsSinceEpoch,
+    });
+
+    notifyListeners();
+  }
 
   Future<void> addMpuData(MpuData mpudata, String patientId) async {
-    await _mpuBox.add(mpudata);
-
-    await _firebaseRef
-        .child('users/$patientId/mpu_data')
-        .push()
-        .set(mpudata.toFirebaseJson());
+    await FirebaseFirestore.instance
+        .collection('patients')
+        .doc(patientId)
+        .collection('sensors')
+        .doc('mpu_data')
+        .set({
+      'lowered': mpudata.lowered,
+      'raised': mpudata.raised,
+      'timestamp': mpudata.timestamp.millisecondsSinceEpoch,
+    });
 
     notifyListeners();
   }

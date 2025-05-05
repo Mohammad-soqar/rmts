@@ -88,6 +88,7 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
              GloveDataTileWidget(
               sensorName: 'Motion',
               sensorIcon: 'assets/icons/hand.svg',
+
               lastResult: 
                   Provider.of<MpuTestViewModel>(context).mpuDataList.isEmpty
                       ? 'No data found'
@@ -104,6 +105,7 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
                   setState(() {}); // 🔁 triggers UI rebuild
                 }
               },
+
 
             ),
             const GloveDataTileWidget(
