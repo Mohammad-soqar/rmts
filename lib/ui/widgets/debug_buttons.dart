@@ -14,6 +14,7 @@ class DebugButtons extends StatelessWidget {
     super.key,
   });
 
+  @override
   Widget build(BuildContext context) {
     final findGloveViewmodel = Provider.of<FindGloveViewmodel>(context);
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
