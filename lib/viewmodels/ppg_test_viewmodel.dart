@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:rmts/data/models/hive/ppg_data.dart';
+import 'package:rmts/data/repositories/sensor_data_repository.dart';
 import 'package:rmts/data/services/ble_service.dart';
 
 class PpgTestViewModel extends ChangeNotifier {
   bool isTesting = false;
   PpgData? result;
-
   List<PpgData> _ppgDataList = [];
   List<PpgData> get ppgDataList => _ppgDataList;
+  final SensorDataRepository _sensorDataRepository = SensorDataRepository();
 
   Future<void> loadPpgData() async {
     final box = Hive.box<PpgData>('ppg_data');
@@ -21,7 +22,8 @@ class PpgTestViewModel extends ChangeNotifier {
   Future<void> startPpgTest(String userId) async {
     isTesting = true;
     result = null;
-    String error; // ⬅️ Add error field to display errors separately if you want
+    // ignore: unused_local_variable
+    String error;
     notifyListeners();
 
     final completer = Completer<void>();
@@ -42,6 +44,7 @@ class PpgTestViewModel extends ChangeNotifier {
 
         result = ppg;
         isTesting = false;
+        _sensorDataRepository.savePpgData(ppg, userId);
         notifyListeners();
 
         if (!completer.isCompleted) {
