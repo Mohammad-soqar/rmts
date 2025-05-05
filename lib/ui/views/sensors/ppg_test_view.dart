@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
@@ -24,12 +25,17 @@ class _PpgTestViewState extends State<PpgTestView>
     _animation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PpgTestViewModel>().startPpgTest('userId').catchError(
-            (_) => _showErr('Please wear the glove properly and try again.'),
-          );
-    });
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    } else {
+      final userId = user.uid;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<PpgTestViewModel>().startPpgTest(userId).catchError(
+              (_) => _showErr('Please wear the glove properly and try again.'),
+            );
+      });
+    }
   }
 
   @override
