@@ -10,7 +10,6 @@ class PpgTestViewModel extends ChangeNotifier {
   PpgData? result;
 
   List<PpgData> _ppgDataList = [];
-
   List<PpgData> get ppgDataList => _ppgDataList;
 
   Future<void> loadPpgData() async {

@@ -4,8 +4,10 @@ import 'package:rmts/ui/views/sensors/mpu_test_view.dart';
 import 'package:rmts/ui/views/sensors/ppg_test_view.dart';
 import 'package:rmts/ui/widgets/glove_data_tile.dart';
 import 'package:rmts/ui/widgets/inputs/app_button.dart';
+import 'package:rmts/viewmodels/flex_test_viewmodel.dart';
 import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
+import 'package:rmts/ui/views/sensors/flex_test_view.dart';
 
 class GloveDataWidget extends StatefulWidget {
   const GloveDataWidget({
@@ -111,10 +113,24 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
               sensorIcon: 'assets/icons/Pressure.svg',
               lastResult: 'Light Grip',
             ),
-            const GloveDataTileWidget(
+            GloveDataTileWidget(
               sensorName: 'Finger Flex',
               sensorIcon: 'assets/icons/Flex.svg',
-              lastResult: 'Half-Bent',
+              lastResult: Provider.of<FlexTestViewModel>(context).flexDataList.isEmpty
+                      ? 'No data found'
+                      : '${Provider.of<FlexTestViewModel>(context).flexDataList.last.bent} '"°"'',
+               onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const FlexTestView()),
+                );
+                if (result == true) {
+                  // This triggers rebuild of the screen and reloads data
+                  Provider.of<FlexTestViewModel>(context, listen: false)
+                      .loadFlexdata();
+                  setState(() {}); // 🔁 triggers UI rebuild
+                }
+              },
             ),
           ],
         ),
