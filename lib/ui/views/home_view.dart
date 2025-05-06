@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rmts/data/models/enums/profile_action_type.dart';
 import 'package:rmts/ui/views/glove_management/glove_view.dart';
-import 'package:rmts/ui/views/sensors/mpu_data_view.dart';
 import 'package:rmts/ui/widgets/debug_buttons.dart';
 import 'package:rmts/ui/widgets/glove_data.dart';
 import 'package:rmts/ui/widgets/home/custom_app_bar.dart';
 import 'package:rmts/ui/widgets/inputs/app_button.dart';
 import 'package:rmts/ui/widgets/pill_tile.dart';
-import 'package:rmts/ui/widgets/profile/profile_action_tile.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
+import 'package:rmts/viewmodels/vibration_motor_viewmodel.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -46,7 +44,6 @@ class _HomeViewState extends State<HomeView> {
     final gloveViewModel = Provider.of<GloveViewModel>(context);
 
     return Scaffold(
-
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -62,14 +59,18 @@ class _HomeViewState extends State<HomeView> {
                     const SizedBox(height: 16),
                     Text(
                       'Actions',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                     ),
                     const SizedBox(height: 16),
-                    const PillTileWidget(
+                    PillTileWidget(
                       pillIcon: "assets/icons/Vibration.svg",
                       pillText: "Vibrate for relief",
+                      onTap: () async {
+                        context.read<VibrationMotorViewmodel>().startVibMotor();
+                      },
                     ),
                     const SizedBox(height: 16),
                     const PillTileWidget(
@@ -84,13 +85,13 @@ class _HomeViewState extends State<HomeView> {
                             "Glove Page  Status: ${gloveViewModel.currentGlove!.status.name}",
                         onPressed: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const GloveView()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const GloveView()));
                         },
                       ),
                     const SizedBox(height: 16),
-                    DebugButtons(), // ✅ Don't forget to remove in production
-                   
+                    const DebugButtons(), // ✅ Don't forget to remove in production
                   ],
                 ),
               ),
