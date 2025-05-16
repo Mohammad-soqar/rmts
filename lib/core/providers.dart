@@ -6,6 +6,7 @@ import 'package:rmts/viewmodels/auth/find_glove_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/register_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/user_viewmodel.dart';
 import 'package:rmts/viewmodels/flex_test_viewmodel.dart';
+import 'package:rmts/viewmodels/fsr_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
 import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
@@ -24,4 +25,5 @@ List<SingleChildWidget> appProviders(gloveRepository) => [
       ChangeNotifierProvider(create: (_) => AppointmentViewmodel()),
       ChangeNotifierProvider(create: (_) => FindGloveViewmodel()),
       ChangeNotifierProvider(create: (_) => VibrationMotorViewmodel()),
+      ChangeNotifierProvider(create: (_) => FSRViewModel()),
     ];

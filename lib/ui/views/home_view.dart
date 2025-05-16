@@ -7,6 +7,7 @@ import 'package:rmts/ui/widgets/home/custom_app_bar.dart';
 import 'package:rmts/ui/widgets/inputs/app_button.dart';
 import 'package:rmts/ui/widgets/pill_tile.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
+import 'package:rmts/viewmodels/fsr_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
 import 'package:rmts/viewmodels/vibration_motor_viewmodel.dart';
 
@@ -73,9 +74,14 @@ class _HomeViewState extends State<HomeView> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    const PillTileWidget(
+                    PillTileWidget(
                       pillIcon: "assets/icons/Calendar_Add.svg",
                       pillText: "Book an appointment",
+                      onTap: () async {
+                        context.read<FSRViewModel>().startFsrTest(
+                          authViewModel.currentPatient!.uid,
+                        );
+                      },
                     ),
                     const SizedBox(height: 30),
                     if (gloveViewModel.currentGlove != null)
