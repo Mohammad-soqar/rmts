@@ -6,10 +6,12 @@ import 'package:flutter_svg/svg.dart';
 class PillTileWidget extends StatelessWidget {
   final String pillIcon;
   final String pillText;
+  final Function()? onTap;
 
   const PillTileWidget({
     required this.pillIcon,
     required this.pillText,
+    this.onTap,
     super.key,
   });
 
@@ -26,7 +28,7 @@ class PillTileWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: onTap,
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
