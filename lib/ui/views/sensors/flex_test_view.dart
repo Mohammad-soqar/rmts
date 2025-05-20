@@ -69,16 +69,10 @@ class _FlexTestViewState extends State<FlexTestView>
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SlideTransition(
-                    position: _offsetAnimation,
-                    child: ScaleTransition(
-                      scale: _scaleAnimation,
-                      child: Icon(
-                        Icons.touch_app,
+                   Icon(
+                        Icons.pan_tool_alt,
                         size: 150,
                         color:Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
                   ),
                   const SizedBox(height: 24),
                   const Text(
@@ -108,7 +102,16 @@ class _FlexTestViewState extends State<FlexTestView>
                           horizontal: 32, vertical: 16),
                       backgroundColor:Theme.of(context).colorScheme.primary,
                     ),
+
                   ),
+                     const SizedBox(height: 20),
+                  ElevatedButton(
+                        onPressed: () async {
+                          await vm.loadFlexdata();
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('Cancel'),
+                      ),
                 ],
               )
             : vm.result != null

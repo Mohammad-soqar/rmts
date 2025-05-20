@@ -82,6 +82,14 @@ class _PpgTestViewState extends State<PpgTestView>
                     'Please follow the on-screen instructions…',
                     textAlign: TextAlign.center,
                   ),
+                     const SizedBox(height: 20),
+                  ElevatedButton(
+                        onPressed: () async {
+                          await vm.loadPpgData();
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('Cancel'),
+                      ),
                 ],
               )
             : vm.result != null

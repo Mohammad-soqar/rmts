@@ -132,6 +132,14 @@ Widget _buildProgressBar(MpuTestStage stage) {
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                        onPressed: () async {
+                          await vm.loadMpuData();
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('Cancel'),
+                      ),
                 ],
               )
             
