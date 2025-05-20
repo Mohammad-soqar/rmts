@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/ui/views/sensors/fsr_test_view.dart';
 import 'package:rmts/ui/views/sensors/mpu_test_view.dart';
 import 'package:rmts/ui/views/sensors/ppg_test_view.dart';
 import 'package:rmts/ui/widgets/glove_data_tile.dart';
 import 'package:rmts/ui/widgets/inputs/app_button.dart';
 import 'package:rmts/viewmodels/flex_test_viewmodel.dart';
+import 'package:rmts/viewmodels/fsr_viewmodel.dart';
 import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
 import 'package:rmts/ui/views/sensors/flex_test_view.dart';
+import 'package:rmts/viewmodels/fsr_viewmodel.dart';
 
 class GloveDataWidget extends StatefulWidget {
   const GloveDataWidget({
@@ -108,10 +111,24 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
 
 
             ),
-            const GloveDataTileWidget(
+             GloveDataTileWidget(
               sensorName: 'Pressure',
               sensorIcon: 'assets/icons/Pressure.svg',
-              lastResult: 'Light Grip',
+              lastResult: Provider.of<FSRViewModel>(context).fsrDataList.isEmpty
+                      ? 'No data found'
+                      : '${Provider.of<FSRViewModel>(context).fsrDataList.last.pressure} '"°"'',
+               onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const FSRTestView()),
+                );
+                if (result == true) {
+                  // This triggers rebuild of the screen and reloads data
+                  Provider.of<FSRViewModel>(context, listen: false)
+                      .loadFsrdata();
+                  setState(() {}); // 🔁 triggers UI rebuild
+                }
+              },
             ),
             GloveDataTileWidget(
               sensorName: 'Finger Flex',

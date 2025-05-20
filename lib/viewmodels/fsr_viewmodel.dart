@@ -7,6 +7,7 @@ import 'dart:async';
 class FSRViewModel extends ChangeNotifier {
   bool isTesting = false;
   FSRData? result;
+  double? pressureValue;
 
   List<FSRData> _fsrDataList = [];
   List<FSRData> get fsrDataList => _fsrDataList;
@@ -26,6 +27,14 @@ class FSRViewModel extends ChangeNotifier {
     final completer = Completer<void>();
 
     BleService.onDataReceived((data) async {
+      if (data.startsWith("FSRResult:")) {
+        final val = double.tryParse(data..replaceFirst("FSRResult:", ""));
+        if (val != null) {
+          pressureValue = val;
+          notifyListeners();
+        }
+        return;
+        }
       if (data.startsWith("FSRResult:")) {
         final parts = data.replaceFirst("FSRResult:", "").split(",");
         final pressure = double.parse(parts[0]);
@@ -63,4 +72,7 @@ class FSRViewModel extends ChangeNotifier {
     await BleService.sendCommand("startFSRTest");
     return completer.future;
   }
+   Future<void> sendCaptureCommand() async {
+  await BleService.sendCommand("captureFSR");
+}
 }

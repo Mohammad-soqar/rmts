@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rmts/viewmodels/flex_test_viewmodel.dart';
+import 'package:rmts/viewmodels/fsr_viewmodel.dart';
 
-class FlexTestView extends StatefulWidget {
-  const FlexTestView({super.key});
+class FSRTestView extends StatefulWidget {
+  const FSRTestView({super.key});
 
   @override
-  State<FlexTestView> createState() => _FlexTestViewState();
+  State<FSRTestView> createState() => _FSRTestViewState();
 }
 
-class _FlexTestViewState extends State<FlexTestView>
+class _FSRTestViewState extends State<FSRTestView>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
@@ -24,15 +24,15 @@ class _FlexTestViewState extends State<FlexTestView>
     )..repeat(reverse: true);
 
     _offsetAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.05),
-      end: const Offset(0, -0.05),
+      begin: const Offset(0, 0.01),
+      end: const Offset(0, -0.01),
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.0).animate(
         CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<FlexTestViewModel>().startFlexTest('userId').catchError(
+      context.read<FSRViewModel>().startFsrTest('userId').catchError(
             (_) => _showErr('Please wear the glove properly and try again.'),
           );
     });
@@ -61,7 +61,7 @@ class _FlexTestViewState extends State<FlexTestView>
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<FlexTestViewModel>();
+    final vm = context.watch<FSRViewModel>();
 
     return Scaffold(
       body: Center(
@@ -70,20 +70,20 @@ class _FlexTestViewState extends State<FlexTestView>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                    Icon(
-                        Icons.pan_tool_alt,
+                        Icons.fingerprint,
                         size: 150,
                         color:Theme.of(context).colorScheme.primary,
-                  ),
+                      ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Bend your finger as much as you can,\nthen press Capture',
+                    'Press finger as much as you can,\nthen press Capture',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 18),
                   ),
-                  if (vm.bentValue != null) ...[
+                  if (vm.pressureValue != null) ...[
                    const SizedBox(height: 12),
                       Text(
-                         'Live Flex: ${vm.bentValue!.toStringAsFixed(0)}',
+                         'Live Flex: ${vm.pressureValue!.toStringAsFixed(1)}',
                           style: const TextStyle(fontSize: 18, color: Colors.blueGrey),
                 ),
                   ],
@@ -102,12 +102,11 @@ class _FlexTestViewState extends State<FlexTestView>
                           horizontal: 32, vertical: 16),
                       backgroundColor:Theme.of(context).colorScheme.primary,
                     ),
-
                   ),
-                     const SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                         onPressed: () async {
-                          await vm.loadFlexdata();
+                          await vm.loadFsrdata();
                           Navigator.pop(context, true);
                         },
                         child: const Text('Cancel'),
@@ -125,13 +124,13 @@ class _FlexTestViewState extends State<FlexTestView>
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        'Bent: ${vm.result!.bent.toStringAsFixed(2)}',
+                        'Bent: ${vm.result!.pressure.toStringAsFixed(2)}',
                         style: const TextStyle(fontSize: 22),
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () async {
-                          await vm.loadFlexdata();
+                          await vm.loadFsrdata();
                           Navigator.pop(context, true);
                         },
                         child: const Text('Return to Results'),
