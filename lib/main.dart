@@ -5,6 +5,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/core/providers.dart';
 import 'package:rmts/data/models/hive/flex_data.dart';
+import 'package:rmts/data/models/hive/fsr_data.dart';
 import 'package:rmts/data/models/hive/mpu_data.dart';
 import 'package:rmts/data/models/hive/ppg_data.dart';
 import 'package:rmts/data/repositories/glove_repository.dart';
@@ -24,6 +25,8 @@ void main() async {
   await Hive.openBox<PpgData>('ppg_data');
   Hive.registerAdapter(FlexDataAdapter());
   await Hive.openBox<FlexData>('flex_data');
+  Hive.registerAdapter(FSRDataAdapter());
+  await Hive.openBox<FSRData>('fsr_data');
 
   final gloveRepository = GloveRepository();
 
