@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/ui/views/glove_management/glove_view.dart';
 import 'package:rmts/ui/widgets/debug_buttons.dart';
+import 'package:rmts/ui/widgets/glove_connection_widget.dart';
 import 'package:rmts/ui/widgets/glove_data.dart';
 import 'package:rmts/ui/widgets/home/custom_app_bar.dart';
 import 'package:rmts/ui/widgets/inputs/app_button.dart';

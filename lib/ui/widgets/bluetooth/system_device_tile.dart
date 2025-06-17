@@ -48,7 +48,8 @@ class _SystemDeviceTileState extends State<SystemDeviceTile> {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+    return 
+    ListTile(
       title: Text(widget.device.platformName),
       subtitle: Text(widget.device.remoteId.str),
       trailing: ElevatedButton(

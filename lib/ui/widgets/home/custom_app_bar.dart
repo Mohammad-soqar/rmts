@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/ui/widgets/glove_connection_widget.dart';
 import 'package:rmts/viewmodels/auth/user_viewmodel.dart';
 
 class CustomAppBar extends StatefulWidget {
@@ -60,23 +61,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
         ),
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: IconButton(
-            icon: SvgPicture.asset(
-              'assets/icons/Bell.svg',
-              width: 30,
-              height: 30,
-              colorFilter: ColorFilter.mode(
-                Theme.of(context).colorScheme.primary,
-                BlendMode.srcIn,
-              ),
-            ),
-            onPressed: () {
-              // handle notifications
-            },
-          ),
-        ),
+                            GloveConnectionTile(),
+
       ],
     );
   }

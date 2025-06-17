@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/data/services/ble_service.dart';
 import 'package:rmts/viewmodels/flex_test_viewmodel.dart';
 
 class FlexTestView extends StatefulWidget {
@@ -108,6 +109,7 @@ class _FlexTestViewState extends State<FlexTestView>
                   ElevatedButton(
                         onPressed: () async {
                           await vm.loadFlexdata();
+                          await BleService.sendCommand("stopFlexTest");
                           Navigator.pop(context, true);
                         },
                         child: const Text('Cancel'),

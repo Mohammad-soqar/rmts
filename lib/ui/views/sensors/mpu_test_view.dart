@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/data/services/ble_service.dart';
 import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 
 
@@ -136,6 +137,7 @@ Widget _buildProgressBar(MpuTestStage stage) {
                   ElevatedButton(
                         onPressed: () async {
                           await vm.loadMpuData();
+                          await BleService.sendCommand("stopMPUTest");
                           Navigator.pop(context, true);
                         },
                         child: const Text('Cancel'),

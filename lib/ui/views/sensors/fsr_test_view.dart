@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/data/services/ble_service.dart';
 import 'package:rmts/viewmodels/fsr_viewmodel.dart';
 
 class FSRTestView extends StatefulWidget {
@@ -107,6 +108,7 @@ class _FSRTestViewState extends State<FSRTestView>
                   ElevatedButton(
                         onPressed: () async {
                           await vm.loadFsrdata();
+                          await BleService.sendCommand("stopFSRTest");
                           Navigator.pop(context, true);
                         },
                         child: const Text('Cancel'),
