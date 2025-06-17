@@ -1,12 +1,16 @@
 import 'dart:async';
-
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BleService {
+  static BluetoothDevice? _device;
   static BluetoothCharacteristic? _commandChar;
   static BluetoothCharacteristic? _notifyChar;
   static StreamSubscription<List<int>>? _notifySubscription;
-  static String? lastData; // ✅ static here
+  static String? lastData;
+
+  static void setDevice(BluetoothDevice device) {
+    _device = device;
+  }
 
   static void setCharacteristics({
     required BluetoothCharacteristic commandCharacteristic,
@@ -31,12 +35,12 @@ class BleService {
         withoutResponse: _commandChar!.properties.writeWithoutResponse,
       );
     } catch (e) {
-      print('Error sending command: $e');
+      print('❌ Error sending command: $e');
     }
   }
 
   static void onDataReceived(Function(String) callback) {
-    _notifySubscription?.cancel(); // Cancel old listener if exists
+    _notifySubscription?.cancel();
     _notifySubscription = _notifyChar?.lastValueStream.listen((value) {
       final data = String.fromCharCodes(value);
 
@@ -44,9 +48,33 @@ class BleService {
         print('⚠️ Duplicate BLE data detected, ignoring.');
         return;
       }
-      lastData = data;
 
+      lastData = data;
       callback(data);
     });
+  }
+
+  static bool get isConnected =>
+      _device != null &&
+      _commandChar != null &&
+      _notifyChar != null &&
+      _device!.isConnected;
+
+  static Future<void> disconnect() async {
+    if (_device != null) {
+      try {
+        await _device!.disconnect();
+        print("🔌 BLE device disconnected.");
+      } catch (e) {
+        print("❌ Error during disconnect: $e");
+      }
+    }
+
+    _device = null;
+    _commandChar = null;
+    _notifyChar = null;
+    _notifySubscription?.cancel();
+    _notifySubscription = null;
+    lastData = null;
   }
 }
