@@ -91,8 +91,7 @@ class DebugButtons extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => AppointmentView(
-                  patientId: authViewModel.currentPatient!.uid,
+                builder: (_) => DoctorDetailsView(
                 ),
               ),
             );

@@ -1,43 +1,57 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rmts/data/models/appointment.dart';
+import 'package:rmts/data/models/doctor.dart';
 
 class AppointmentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String collection = 'appointments'; 
+  final String _collection = 'appointments';
 
-  // Add an appointment
   Future<void> addAppointment(Appointment appointment) async {
-    try {
-      await _firestore
-          .collection(collection)
-          .doc(appointment.appointmentId)
-          .set(appointment.toJson());
-
-      print("Appointment added: ${appointment.toJson()}"); 
-    } catch (e) {
-      print(" Error adding appointment: $e");
-      throw Exception("Failed to add appointment: $e");
-    }
+    await _firestore
+      .collection(_collection)
+      .doc(appointment.appointmentId)
+      .set(appointment.toJson());
   }
 
-  // Fetch all appointments for a given patient
-  Future<List<Appointment>> getAppointmentsByPatientId(String patientId) async {
-    try {
-      QuerySnapshot snapshot = await _firestore
-          .collection(collection)
-          .where('patientId', isEqualTo: patientId)
-          .orderBy('dateTime', descending: true)
-          .get();
+  Future<List<Appointment>> fetchByPatient(String patientId) async {
+    final snap = await _firestore
+      .collection(_collection)
+      .where('patientId', isEqualTo: patientId)
+      .orderBy('dateTime', descending: false)
+      .get();
 
-      List<Appointment> appointments = snapshot.docs
-          .map((doc) => Appointment.fromSnap(doc))
-          .toList();
+    return snap.docs.map((d) => Appointment.fromSnap(d)).toList();
+  }
+}
 
-      print("Retrieved ${appointments.length} appointments for patient $patientId"); 
-      return appointments;
-    } catch (e) {
-      print("Error fetching appointments: $e");
-      throw Exception("Failed to fetch appointments: $e");
+
+
+class AppointmentRepository {
+  final AppointmentService _service;
+
+  AppointmentRepository({AppointmentService? service})
+      : _service = service ?? AppointmentService();
+
+  Future<void> addAppointment(Appointment appointment) {
+    return _service.addAppointment(appointment);
+  }
+
+  Future<List<Appointment>> fetchAppointmentsByPatient(String patientId) {
+    return _service.fetchByPatient(patientId);
+  }
+}
+
+
+
+class DoctorService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String _collection = 'users';
+
+  Future<Doctor?> fetchDoctor(String doctorId) async {
+    final snap = await _firestore.collection(_collection).doc(doctorId).get();
+    if (snap.exists) {
+      return Doctor.fromSnap(snap);
     }
+    return null;
   }
 }
