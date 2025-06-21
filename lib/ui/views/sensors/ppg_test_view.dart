@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
+import 'package:rmts/data/services/ble_service.dart';
 
 class PpgTestView extends StatefulWidget {
   const PpgTestView({super.key});
@@ -13,6 +16,9 @@ class _PpgTestViewState extends State<PpgTestView>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+
+  int _elapsedSeconds = 0;
+  Timer? _timer; 
 
   @override
   void initState() {
@@ -34,15 +40,33 @@ class _PpgTestViewState extends State<PpgTestView>
         context.read<PpgTestViewModel>().startPpgTest(userId).catchError(
               (_) => _showErr('Please wear the glove properly and try again.'),
             );
+            
+            startTimer();
       });
+      
     }
+  }
+  void startTimer() {
+        _elapsedSeconds = 0; 
+        _timer?.cancel(); 
+        _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+          setState(() {
+            _elapsedSeconds++;
+          });
+        });
+      }
+
+   void _stopTimer() {
+    _timer?.cancel();
   }
 
   @override
   void dispose() {
     _controller.dispose();
-
+    _stopTimer();
     super.dispose();
+   
+
   }
 
   void _showErr(String m) => showDialog(
@@ -78,13 +102,18 @@ class _PpgTestViewState extends State<PpgTestView>
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Please follow the on-screen instructions…',
-                    textAlign: TextAlign.center,
+                   Text(
+                    _elapsedSeconds < 8
+                        ? 'Hold you hands still for stabilizing: ${8 - _elapsedSeconds}s remaining'
+                        : 'Capturing BPM... (${_elapsedSeconds - 8}s)',
+                    style: const TextStyle(fontSize: 18, color: Colors.blueGrey),
+                    textAlign: TextAlign.center
+                  
                   ),
                      const SizedBox(height: 20),
                   ElevatedButton(
                         onPressed: () async {
+                          _stopTimer(); 
                           await vm.loadPpgData();
                           Navigator.pop(context, true);
                         },

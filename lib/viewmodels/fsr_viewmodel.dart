@@ -27,8 +27,8 @@ class FSRViewModel extends ChangeNotifier {
     final completer = Completer<void>();
 
     BleService.onDataReceived((data) async {
-      if (data.startsWith("FSRResult:")) {
-        final val = double.tryParse(data..replaceFirst("FSRResult:", ""));
+      if (data.startsWith("FsrLive:")) {
+        final val = double.tryParse(data.replaceFirst("FsrLive:", ""));
         if (val != null) {
           pressureValue = val;
           notifyListeners();
@@ -43,7 +43,7 @@ class FSRViewModel extends ChangeNotifier {
           pressure: pressure,
           timestamp: DateTime.now(),
         );
-        print("FSR Result: $pressure");
+        
 
         final box = Hive.box<FSRData>('fsr_data');
         if (box.isNotEmpty) await box.clear();

@@ -84,7 +84,7 @@ class _FSRTestViewState extends State<FSRTestView>
                   if (vm.pressureValue != null) ...[
                    const SizedBox(height: 12),
                       Text(
-                         'Live Flex: ${vm.pressureValue!.toStringAsFixed(1)}',
+                         'Live Fsr: ${vm.pressureValue!.toStringAsFixed(1)}',
                           style: const TextStyle(fontSize: 18, color: Colors.blueGrey),
                 ),
                   ],
