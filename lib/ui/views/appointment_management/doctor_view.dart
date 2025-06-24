@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:rmts/data/models/doctor.dart';
+import 'package:rmts/data/models/user.dart';
 import 'package:rmts/ui/widgets/doctorDetails/calendar_widget.dart';
 import 'package:rmts/ui/widgets/doctorDetails/doctor_tile_widget.dart';
 
 class DoctorDetailsView extends StatefulWidget {
-  const DoctorDetailsView({super.key});
+  final Doctor? doctor;
+  final User? userInfo;
+
+  const DoctorDetailsView({super.key, this.doctor, this.userInfo});
 
   @override
   _DoctorDetailsViewState createState() => _DoctorDetailsViewState();
@@ -12,16 +17,35 @@ class DoctorDetailsView extends StatefulWidget {
 class _DoctorDetailsViewState extends State<DoctorDetailsView> {
   bool isExpanded = false;
 
-  final String fullText =
-      'Dr. Abdullah Al-Fahad is a highly experienced dentist with over 15 years of expertise in general and cosmetic dentistry. '
-      'Dr. Al-Fahad stays up-to-date with the latest dental technologies and has helped countless patients achieve healthy, confident smiles.';
+  late final String fullText;
+  late final Doctor? doctorDetails;
+  late final User? doctorUserInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    fullText = widget.doctor!.description;
+    doctorDetails = widget.doctor;
+    doctorUserInfo = widget.userInfo;
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (doctorDetails == null || doctorUserInfo == null) {
+      return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Doctor Details'),
+        ),
+        body: const Center(
+          child: Text('Doctor details not available.'),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Doctor Details'),
+        title: const Text('Doctor Details'),
       ),
       body: SizedBox(
         width: double.infinity,
@@ -30,12 +54,12 @@ class _DoctorDetailsViewState extends State<DoctorDetailsView> {
           child: Column(
             children: [
               DoctorTileWidget(
-                doctorName: 'Dr. Abdullah Al-Fahad',
-                doctorImage: 'assets/doctors/1.png',
-                doctorSpecialty: 'Dentist',
-                doctorRating: '4.7',
-              ),
-              SizedBox(height: 16),
+                  doctorName: doctorUserInfo!.fullName,
+                  doctorImage: 'assets/doctors/5.png',
+                  doctorSpecialty: 'Rheumatologist',
+                  doctorRating: '4.8',
+                  specialization: 'joint care & autoimmune diseases'),
+              const SizedBox(height: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -82,8 +106,42 @@ class _DoctorDetailsViewState extends State<DoctorDetailsView> {
                   ),
                 ],
               ),
-              Spacer(),
-              EasyDateTimePicker(),
+              const Spacer(),
+
+               /*  // Check if there are upcoming appointments
+                (doctorDetails?.appointments == null ||
+                    doctorDetails!.appointments!.isEmpty)
+                  ? EasyDateTimePicker(
+                    doctor: widget.doctor,
+                  )
+                  : Column(
+                    children: [
+                    Text(
+                      'You have an appointment already booked.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                      ElevatedButton(
+                        onPressed: () {
+                        // TODO: Implement cancel appointment logic
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                      const SizedBox(width: 12),
+                      ElevatedButton(
+                        onPressed: () {
+                        // TODO: Implement reschedule appointment logic
+                        },
+                        child: const Text('Reschedule'),
+                      ),
+                      ],
+                    ),
+                    ],
+                  ), */
+              const Spacer(),
             ],
           ),
         ),

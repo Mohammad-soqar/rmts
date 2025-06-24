@@ -34,7 +34,7 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
   final themeStr = prefs.getString('display_mode') ?? 'system';
-  final langCode = 'en';
+  const langCode = 'en';
 
   ThemeMode themeMode = switch (themeStr) {
     'light' => ThemeMode.light,
@@ -44,7 +44,7 @@ void main() async {
 
   final appSettings = AppSettings();
   appSettings.setThemeMode(themeMode);
-  appSettings.setLocale(Locale(langCode));
+  appSettings.setLocale(const Locale(langCode));
 
   runApp(
     MultiProvider(
@@ -53,7 +53,7 @@ void main() async {
         ChangeNotifierProvider(
             create: (_) => appSettings), // Use configured instance
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -76,7 +76,7 @@ class MyApp extends StatelessWidget {
         Locale('ar'),
         Locale('tr'),
       ],
-      localizationsDelegates: [
+      localizationsDelegates: const [
         // Add localization delegates
       ],
       home: const AuthWrapper(),
