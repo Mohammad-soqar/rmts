@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rmts/ui/views/appointment_management/appointment_view.dart';
+import 'package:rmts/ui/views/appointment_management/doctor_view.dart';
 import 'package:rmts/ui/views/bluetooth_view.dart';
 import 'package:rmts/ui/views/glove_management/add_edit_glove.dart';
 import 'package:rmts/ui/views/sensors/mpu_data_view.dart';
@@ -91,8 +91,7 @@ class DebugButtons extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => AppointmentView(
-                  patientId: authViewModel.currentPatient!.uid,
+                builder: (_) => DoctorDetailsView(
                 ),
               ),
             );

@@ -101,13 +101,7 @@ class _LoginViewState extends State<LoginView> {
                   label: "Login",
                   onPressed: _signIn,
                 ),
-                //TODO: Remove this button in production
-                const SizedBox(height: 10),
-                 CustomButton(
-                  color: Theme.of(context).colorScheme.primary,
-                  label: "Auto Login Debug only",
-                  onPressed:   _autoSignIn,
-                ),
+              
                 const SizedBox(height: 40),
               ],
             ),

@@ -111,7 +111,7 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
 
 
             ),
-             GloveDataTileWidget(
+             GloveDataTileWidget( 
               sensorName: 'Pressure',
               sensorIcon: 'assets/icons/Pressure.svg',
               lastResult: Provider.of<FSRViewModel>(context).fsrDataList.isEmpty

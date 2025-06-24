@@ -5,12 +5,14 @@ class AppTextField extends StatefulWidget {
   final TextEditingController controller;
   final TextInputType keyboardType;
   final bool isPassword;
+  final bool readOnly;
 
   const AppTextField({
     required this.labelText,
     required this.controller,
     this.keyboardType = TextInputType.text,
     this.isPassword = false,
+    this.readOnly = false,
   });
 
   @override
