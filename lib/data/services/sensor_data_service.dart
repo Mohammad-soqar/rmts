@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rmts/data/models/hive/flex_data.dart';
+import 'package:rmts/data/models/hive/fsr_data.dart';
 import 'package:rmts/data/models/hive/mpu_data.dart';
 import 'package:rmts/data/models/hive/ppg_data.dart';
 
@@ -45,6 +46,20 @@ class SensorDataService extends ChangeNotifier {
         .set({
       'bent': flexData.bent,
       'timestamp': flexData.timestamp.millisecondsSinceEpoch,
+    });
+
+    notifyListeners();
+  }
+
+  Future<void> addFsrData(FSRData fsrData, String patientId) async {
+    await FirebaseFirestore.instance
+        .collection('patients')
+        .doc(patientId)
+        .collection('sensors')
+        .doc('fsr_data')
+        .set({
+      'pressure': fsrData.pressure,
+      'timestamp': fsrData.timestamp.millisecondsSinceEpoch,
     });
 
     notifyListeners();
