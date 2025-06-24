@@ -3,15 +3,40 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:rmts/data/models/doctor.dart';
+import 'package:rmts/viewmodels/appointment_viewmodel.dart';
+import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 
 class EasyDateTimePicker extends StatefulWidget {
-  const EasyDateTimePicker({super.key});
+  final Doctor? doctor;
+
+  const EasyDateTimePicker({super.key, this.doctor});
 
   @override
   State<EasyDateTimePicker> createState() => _EasyDateTimePickerState();
 }
 
 class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
+  late final Doctor? doctorDetails;
+
+  @override
+  void initState() {
+    super.initState();
+    doctorDetails = widget.doctor;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (doctorDetails != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Provider.of<AppointmentViewmodel>(context, listen: false)
+            .loadForDoctor(doctorDetails!.uid);
+      });
+    }
+  }
+
   DateTime? selectedDate = DateTime.now();
   String? selectedTime;
 
@@ -27,13 +52,32 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
     '11:00 AM',
   ];
 
-  final List<String> unavailableSlots = ['09:30 AM', '10:45 AM'];
-
   bool isWeekend(DateTime date) =>
       date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<AppointmentViewmodel>(context);
+    final auth = Provider.of<AuthViewModel>(context, listen: false);
+
+    final List<DateTime> unavailableDates = vm.appointments
+        .map((a) => DateTime(a.dateTime.year, a.dateTime.month, a.dateTime.day))
+        .toSet()
+        .toList();
+
+    final List<String> unavailableSlots = vm.appointments
+        .where((a) =>
+            selectedDate != null &&
+            a.dateTime.year == selectedDate!.year &&
+            a.dateTime.month == selectedDate!.month &&
+            a.dateTime.day == selectedDate!.day)
+        .map((a) {
+      final hour = a.dateTime.hour % 12 == 0 ? 12 : a.dateTime.hour % 12;
+      final minute = a.dateTime.minute.toString().padLeft(2, '0');
+      final amPm = a.dateTime.hour >= 12 ? 'PM' : 'AM';
+      return '$hour:$minute $amPm';
+    }).toList();
+
     final isReady = selectedDate != null && selectedTime != null;
 
     return Padding(
@@ -82,19 +126,11 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
           /// Easy Date Timeline
           EasyDateTimeLine(
             initialDate: selectedDate!,
-            headerProps: EasyHeaderProps(showHeader: false),
-            timeLineProps: EasyTimeLineProps(
+            headerProps: const EasyHeaderProps(showHeader: false),
+            timeLineProps: const EasyTimeLineProps(
               separatorPadding: 18,
             ),
-            disabledDates: [
-              ...List.generate(365, (index) {
-                return DateTime.now().subtract(Duration(days: index + 1));
-              }),
-              ...List.generate(90, (i) {
-                final d = DateTime.now().add(Duration(days: i));
-                return isWeekend(d) ? d : null;
-              }).whereType<DateTime>(),
-            ],
+            disabledDates: unavailableDates,
             onDateChange: (date) {
               if (!isWeekend(date)) {
                 setState(() => selectedDate = date);
@@ -221,7 +257,21 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: isReady
-                  ? () => debugPrint('Selected: $selectedDate $selectedTime')
+                  ? () => vm.addAppointment(
+                        vm.doctorDetails!.uid,
+                        auth.currentPatient!.uid,
+                        DateTime(
+                          selectedDate!.year,
+                          selectedDate!.month,
+                          selectedDate!.day,
+                          int.parse(selectedTime!.split(':')[0]) +
+                              (selectedTime!.contains('PM') &&
+                                      selectedTime!.split(':')[0] != '12'
+                                  ? 12
+                                  : 0),
+                          int.parse(selectedTime!.split(':')[1].split(' ')[0]),
+                        ),
+                      )
                   : null,
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -236,7 +286,7 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
                     ? Theme.of(context).colorScheme.onPrimary
                     : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
               ),
-              child: const Text('Next'),
+              child: const Text('Confirm Appointment'),
             ),
           ),
         ],
