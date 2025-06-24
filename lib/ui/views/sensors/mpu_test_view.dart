@@ -1,5 +1,6 @@
 // mpu_test_screen.dart
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/data/services/ble_service.dart';
@@ -36,12 +37,19 @@ class _MpuTestViewState extends State<MpuTestView>
      _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MpuTestViewModel>().startMpuTest('userId').catchError(
+  final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    } else {
+      final userId = user.uid;
+       WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MpuTestViewModel>().startMpuTest(userId).catchError(
             (_) => _showErr('Please wear the glove properly and try again.'),
           );
     });
+      
+    }
+   
   }
  
  @override

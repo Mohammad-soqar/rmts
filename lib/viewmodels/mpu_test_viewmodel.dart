@@ -65,7 +65,7 @@ class MpuTestViewModel extends ChangeNotifier {
 
         result = mpu;
         isTesting = false;
-        _sensorDataRepository.saveMpuData(mpu, userId);
+       await _sensorDataRepository.saveMpuData(mpu, userId);
 
         stage = MpuTestStage.done;
         gloveStatusViewModel.updateSyncTime();  
