@@ -69,9 +69,9 @@ class _MpuTestViewState extends State<MpuTestView>
       case MpuTestStage.idle:
         return const Text('Idle');
      case MpuTestStage.waitingRaise:
-       return const Text('Please raise your wrist...',style: TextStyle(fontSize: 18));
+       return const Text('Please raise your wrist for 5 seconds...',style: TextStyle(fontSize: 18));
       case MpuTestStage.waitingLower:
-          return const Text("Now lower your wrist...", style: TextStyle(fontSize: 18));
+          return const Text("Now lower your wrist for 5 seconds...", style: TextStyle(fontSize: 18));
       case MpuTestStage.done:
         return const Text('Test completed!', style: TextStyle(fontSize: 18));
     }
@@ -129,7 +129,7 @@ Widget _buildProgressBar(MpuTestStage stage) {
               _buildProgressBar(vm.stage),
             
                   Text(
-                    'Raise and lower your wrist following the rhythm…',
+                    'Raise and lower your wrist…',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),

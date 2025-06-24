@@ -10,7 +10,7 @@ import 'package:rmts/ui/views/sensors/fsr_test_view.dart';
 import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
 import 'package:rmts/ui/views/sensors/flex_test_view.dart';
-
+import 'package:rmts/viewmodels/glovestatus_viewmodel.dart';
 
 class GloveDataWidget extends StatefulWidget {
   const GloveDataWidget({
@@ -34,6 +34,7 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<PpgTestViewModel>(context);
+    final gloveStatus = Provider.of<GloveStatusViewModel>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,12 +51,13 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
               ),
-              Text(
-                'Last Scanned 15:04 17/04/2025',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-              ),
+              if (gloveStatus.formattedSyncTime != null)
+                Text(
+                  'Last Scanned: ${gloveStatus.formattedSyncTime}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
             ],
           ),
         ),
@@ -88,15 +90,19 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
                 }
               },
             ),
-             GloveDataTileWidget(
+            GloveDataTileWidget(
               sensorName: 'Motion',
               sensorIcon: 'assets/icons/hand.svg',
-
-              lastResult: 
-                  Provider.of<MpuTestViewModel>(context).mpuDataList.isEmpty
-                      ? 'No data found'
-                      : '${Provider.of<MpuTestViewModel>(context).mpuDataList.last.raised} '"°"' ${Provider.of<MpuTestViewModel>(context).mpuDataList.last.lowered} '"°"'',
-               onTap: () async {
+              lastResult: Provider.of<MpuTestViewModel>(context)
+                      .mpuDataList
+                      .isEmpty
+                  ? 'No data found'
+                  : '${Provider.of<MpuTestViewModel>(context).mpuDataList.last.raised} '
+                      "°"
+                      ' ${Provider.of<MpuTestViewModel>(context).mpuDataList.last.lowered} '
+                      "°"
+                      '',
+              onTap: () async {
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const MpuTestView()),
@@ -108,16 +114,16 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
                   setState(() {}); // 🔁 triggers UI rebuild
                 }
               },
-
-
             ),
-             GloveDataTileWidget(
+            GloveDataTileWidget(
               sensorName: 'Pressure',
               sensorIcon: 'assets/icons/Pressure.svg',
               lastResult: Provider.of<FSRViewModel>(context).fsrDataList.isEmpty
-                      ? 'No data found'
-                      : '${Provider.of<FSRViewModel>(context).fsrDataList.last.pressure} '"°"'',
-               onTap: () async {
+                  ? 'No data found'
+                  : '${Provider.of<FSRViewModel>(context).fsrDataList.last.pressure} '
+                      "°"
+                      '',
+              onTap: () async {
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const FSRTestView()),
@@ -133,10 +139,14 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
             GloveDataTileWidget(
               sensorName: 'Finger Flex',
               sensorIcon: 'assets/icons/Flex.svg',
-              lastResult: Provider.of<FlexTestViewModel>(context).flexDataList.isEmpty
-                      ? 'No data found'
-                      : '${Provider.of<FlexTestViewModel>(context).flexDataList.last.bent} '"°"'',
-               onTap: () async {
+              lastResult: Provider.of<FlexTestViewModel>(context)
+                      .flexDataList
+                      .isEmpty
+                  ? 'No data found'
+                  : '${Provider.of<FlexTestViewModel>(context).flexDataList.last.bent} '
+                      "°"
+                      '',
+              onTap: () async {
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const FlexTestView()),
@@ -149,7 +159,6 @@ class _GloveDataWidgetState extends State<GloveDataWidget> {
                 }
               },
             ),
-             
           ],
         ),
         const SizedBox(height: 12),

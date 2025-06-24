@@ -13,7 +13,9 @@ import 'package:rmts/ui/responsive/mobile_screen_layout.dart';
 import 'package:rmts/ui/responsive/responsive_layout_screen.dart';
 import 'package:rmts/ui/responsive/web_screen_layout.dart';
 import 'package:rmts/ui/themes/theme.dart';
+import 'package:rmts/ui/views/auth/login_view.dart';
 import 'package:rmts/ui/views/auth/splashScreens/SplashView.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,7 +75,7 @@ class AuthWrapper extends StatelessWidget {
               webScreenLayout: WebScreenLayout(),
             );
           }
-          return const SplashView(); // Show Splash Screen
+          return const LoginView(); // Show Splash Screen
         }
       },
     );

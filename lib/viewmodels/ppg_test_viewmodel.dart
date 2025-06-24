@@ -5,6 +5,8 @@ import 'package:hive/hive.dart';
 import 'package:rmts/data/models/hive/ppg_data.dart';
 import 'package:rmts/data/repositories/sensor_data_repository.dart';
 import 'package:rmts/data/services/ble_service.dart';
+import 'package:rmts/viewmodels/glovestatus_viewmodel.dart';
+
 
 class PpgTestViewModel extends ChangeNotifier {
   bool isTesting = false;
@@ -12,6 +14,10 @@ class PpgTestViewModel extends ChangeNotifier {
   List<PpgData> _ppgDataList = [];
   List<PpgData> get ppgDataList => _ppgDataList;
   final SensorDataRepository _sensorDataRepository = SensorDataRepository();
+  final GloveStatusViewModel gloveStatusViewModel;
+
+  PpgTestViewModel(this.gloveStatusViewModel);
+
 
   Future<void> loadPpgData() async {
     final box = Hive.box<PpgData>('ppg_data');
@@ -45,6 +51,7 @@ class PpgTestViewModel extends ChangeNotifier {
         result = ppg;
         isTesting = false;
         _sensorDataRepository.savePpgData(ppg, userId);
+        gloveStatusViewModel.updateSyncTime();
         notifyListeners();
 
         if (!completer.isCompleted) {
