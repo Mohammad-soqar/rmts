@@ -24,22 +24,19 @@ class Patient {
   factory Patient.fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
 
-    // New logic to parse dates
     DateTime? parseDate(dynamic value) {
-      if (value != null) {
-        Timestamp timestamp = value as Timestamp;
-        return timestamp.toDate();
-      }
+      if (value is Timestamp) return value.toDate();
+      if (value is String) return DateTime.tryParse(value);
       return null;
     }
 
     return Patient(
-      uid: snapshot['uid'],
-      emergencyContact: snapshot['emergencyContact'],
-      doctorId: snapshot['doctorId'],
-      prescriptionId: snapshot['prescrptionId'],
-      gloveId: snapshot['gloveId'],
-      gloveName: snapshot['gloveName'],
+      uid: snapshot['uid'] ?? '',
+      emergencyContact: snapshot['emergencyContact'] ?? '',
+      doctorId: snapshot['doctorId'] ?? '',
+      prescriptionId: snapshot['prescrptionId'] ?? '',
+      gloveId: snapshot['gloveId'] ?? '',
+      gloveName: snapshot['gloveName'] ?? '',
       lastSynced: parseDate(snapshot['lastSynced']) ?? DateTime.now(),
       lastCheckIn: parseDate(snapshot['lastCheckIn']) ?? DateTime.now(),
     );

@@ -7,8 +7,6 @@ class Doctor {
   final String licenseNumber;
   final List patientIds;
 
-
-
   const Doctor({
     required this.uid,
     required this.nationalId,
@@ -16,8 +14,6 @@ class Doctor {
     required this.licenseNumber,
     required this.patientIds,
   });
-
-
 
   factory Doctor.fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
@@ -27,8 +23,7 @@ class Doctor {
       nationalId: snapshot['nationalId'],
       description: snapshot['description'],
       licenseNumber: snapshot['licenseNumber'],
-      patientIds: snapshot['patientIds'],
-    
+      patientIds: List<dynamic>.from(snapshot['patientIds'] ?? []),
     );
   }
 
@@ -41,8 +36,6 @@ class Doctor {
       'description': description,
       'licenseNumber': licenseNumber,
       'patientIds': patientIds,
-
     };
-    
   }
 }
