@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rmts/ui/views/glove_management/glove_view.dart';
-import 'package:rmts/ui/widgets/debug_buttons.dart';
-import 'package:rmts/ui/widgets/glove_connection_widget.dart';
 import 'package:rmts/ui/widgets/glove_data.dart';
 import 'package:rmts/ui/widgets/home/custom_app_bar.dart';
-import 'package:rmts/ui/widgets/inputs/app_button.dart';
 import 'package:rmts/ui/widgets/pill_tile.dart';
+import 'package:rmts/utils/helpers/dataMigration.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/fsr_viewmodel.dart';
 import 'package:rmts/viewmodels/glove_viewmodel.dart';
@@ -80,25 +77,12 @@ class _HomeViewState extends State<HomeView> {
                       pillText: "Book an appointment",
                       onTap: () async {
                         context.read<FSRViewModel>().startFsrTest(
-                          authViewModel.currentPatient!.uid,
-                        );
+                              authViewModel.currentPatient!.uid,
+                            );
                       },
                     ),
                     const SizedBox(height: 30),
-                    if (gloveViewModel.currentGlove != null)
-                      CustomButton(
-                        color: Theme.of(context).colorScheme.primary,
-                        label:
-                            "Glove Page  Status: ${gloveViewModel.currentGlove!.status.name}",
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const GloveView()));
-                        },
-                      ),
-                    const SizedBox(height: 16),
-                    const DebugButtons(), // ✅ Don't forget to remove in production
+                   
                   ],
                 ),
               ),

@@ -18,47 +18,47 @@ class ProfileActionTile extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:12.0),
-      child: Row(children: [
-        SvgPicture.asset(
-          icon,
-          color: Theme.of(context).colorScheme.primary,
-         
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+    return GestureDetector(
+     
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal:12.0),
+        child: Row(children: [
+          SvgPicture.asset(
+            icon,
+            color: Theme.of(context).colorScheme.primary,
+           
           ),
-        ),
-  Container(
-    width: 34,
-    height: 34,
-    child: type == ProfileActionType.push
-        ? IconButton(
-            onPressed: onTap,
-            icon: SvgPicture.asset(
-              'assets/icons/Chevron_Right.svg',
-              color: Theme.of(context).colorScheme.onSurface,
-              width: 34,
-              height: 34,
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
             ),
-          )
-        : type == ProfileActionType.toggle
-            ? Switch(
-                value: false,
-                onChanged: (value) {},
-                activeColor: Theme.of(context).colorScheme.primary,
-              )
-            : null,
-  )
-      
-       
-      ],),
+          ),
+        SizedBox(
+      width: 34,
+      height: 34,
+      child: type == ProfileActionType.push
+          ? Icon(
+              Icons.chevron_right,
+              color: Theme.of(context).colorScheme.onSurface,
+              size: 28,
+            )
+          : type == ProfileActionType.toggle
+              ? Switch(
+                  value: false,
+                  onChanged: (value) {},
+                  activeColor: Theme.of(context).colorScheme.primary,
+                )
+              : null,
+        )
+        
+         
+        ],),
+      ),
     );
   }
 }

@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:rmts/data/models/hive/fsr_data.dart';
+import 'package:rmts/data/repositories/sensor_data_repository.dart';
 import 'package:rmts/data/services/ble_service.dart';
-import 'dart:async';
 
 class FSRViewModel extends ChangeNotifier {
   bool isTesting = false;
@@ -11,6 +13,7 @@ class FSRViewModel extends ChangeNotifier {
 
   List<FSRData> _fsrDataList = [];
   List<FSRData> get fsrDataList => _fsrDataList;
+  final SensorDataRepository _sensorDataRepository = SensorDataRepository();
 
   Future<void> loadFsrdata() async {
     final box = Hive.box<FSRData>('fsr_data');
@@ -34,7 +37,7 @@ class FSRViewModel extends ChangeNotifier {
           notifyListeners();
         }
         return;
-        }
+      }
       if (data.startsWith("FSRResult:")) {
         final parts = data.replaceFirst("FSRResult:", "").split(",");
         final pressure = double.parse(parts[0]);
@@ -43,7 +46,6 @@ class FSRViewModel extends ChangeNotifier {
           pressure: pressure,
           timestamp: DateTime.now(),
         );
-        
 
         final box = Hive.box<FSRData>('fsr_data');
         if (box.isNotEmpty) await box.clear();
@@ -51,6 +53,8 @@ class FSRViewModel extends ChangeNotifier {
 
         result = fsr;
         isTesting = false;
+        _sensorDataRepository.saveFsrData(fsr, userId);
+
         notifyListeners();
 
         if (!completer.isCompleted) {
@@ -72,7 +76,8 @@ class FSRViewModel extends ChangeNotifier {
     await BleService.sendCommand("startFSRTest");
     return completer.future;
   }
-   Future<void> sendCaptureCommand() async {
-  await BleService.sendCommand("captureFSR");
-}
+
+  Future<void> sendCaptureCommand() async {
+    await BleService.sendCommand("captureFSR");
+  }
 }
