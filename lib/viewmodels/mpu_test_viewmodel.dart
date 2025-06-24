@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:rmts/data/models/hive/mpu_data.dart';
+import 'package:rmts/data/repositories/sensor_data_repository.dart';
 import 'package:rmts/data/services/ble_service.dart';
 import 'package:rmts/viewmodels/glovestatus_viewmodel.dart';
 
@@ -18,6 +19,7 @@ class MpuTestViewModel extends ChangeNotifier {
   MpuTestStage stage = MpuTestStage.idle;
 
   final GloveStatusViewModel gloveStatusViewModel;
+  final SensorDataRepository _sensorDataRepository = SensorDataRepository();
 
   List<MpuData> _mpuDataList = [];
   List<MpuData> get mpuDataList => _mpuDataList;
@@ -34,19 +36,18 @@ class MpuTestViewModel extends ChangeNotifier {
     isTesting = true;
     result = null;
     stage = MpuTestStage.waitingRaise;
+    String error;
     notifyListeners();
 
     await BleService.sendCommand("startMPUTest");
 
     BleService.onDataReceived((data) async {
       if (!isTesting) return;
-
       if (data == "RAISED_CAPTURED") {
         stage = MpuTestStage.waitingLower;
         notifyListeners();
         return;
       }
-
       if (data.startsWith("MPUResult:")) {
         final parts = data.replaceFirst("MPUResult:", "").split(",");
         final raised = double.parse(parts[0]);
@@ -64,6 +65,8 @@ class MpuTestViewModel extends ChangeNotifier {
 
         result = mpu;
         isTesting = false;
+        _sensorDataRepository.saveMpuData(mpu, userId);
+
         stage = MpuTestStage.done;
         gloveStatusViewModel.updateSyncTime();  
         notifyListeners();

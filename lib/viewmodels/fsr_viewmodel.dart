@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:rmts/data/models/hive/fsr_data.dart';
+import 'package:rmts/data/repositories/sensor_data_repository.dart';
 import 'package:rmts/data/services/ble_service.dart';
 import 'dart:async';
 import 'package:rmts/viewmodels/glovestatus_viewmodel.dart';
@@ -14,6 +17,7 @@ class FSRViewModel extends ChangeNotifier {
 
   List<FSRData> _fsrDataList = [];
   List<FSRData> get fsrDataList => _fsrDataList;
+  final SensorDataRepository _sensorDataRepository = SensorDataRepository();
 
   FSRViewModel(this.gloveStatusViewModel);
 
@@ -39,7 +43,6 @@ class FSRViewModel extends ChangeNotifier {
         }
         return;
       }
-
       if (data.startsWith("FSRResult:")) {
         final parts = data.replaceFirst("FSRResult:", "").split(",");
         final pressure = double.parse(parts[0]);
@@ -56,6 +59,8 @@ class FSRViewModel extends ChangeNotifier {
         result = fsr;
         isTesting = false;
         gloveStatusViewModel.updateSyncTime();  
+        _sensorDataRepository.saveFsrData(fsr, userId);
+
         notifyListeners();
 
         if (!completer.isCompleted) {

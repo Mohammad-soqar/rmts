@@ -69,7 +69,8 @@ class PpgTestViewModel extends ChangeNotifier {
         }
       }
     });
-
+  
+    // add navigation to another screen here
     await BleService.sendCommand("startPPGTest");
     return completer.future;
   }

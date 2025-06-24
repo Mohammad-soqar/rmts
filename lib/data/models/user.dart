@@ -42,32 +42,29 @@ class User {
   static User fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
 
-    // New logic to parse dates
     DateTime? parseDate(dynamic value) {
-      if (value != null) {
-        Timestamp timestamp = value as Timestamp;
-        return timestamp.toDate();
-      }
+      if (value is Timestamp) return value.toDate();
+      if (value is String) return DateTime.tryParse(value);
       return null;
     }
 
-    // Parse birthDate and calculate age dynamically
-    DateTime birthDate = parseDate(snapshot['birthDate']) ?? DateTime(1970, 1, 1);
-    int age = calculateAge(birthDate);
+    final birthDate = parseDate(snapshot['birthDate']) ?? DateTime(1970, 1, 1);
+    final createdAt = parseDate(snapshot['createdAt']) ?? DateTime.now();
+    final updatedAt = parseDate(snapshot['lastUpdatedAt']) ?? DateTime.now();
 
     return User(
       uid: snap.id,
-      fullName: snapshot['fullName'],
-      phoneNumber: snapshot['phoneNumber'],
-      email: snapshot['email'],
-      nationality: snapshot['nationality'],
-      gender: snapshot['gender'],
-      age: age, // Dynamically calculated
-      birthDate: parseDate(snapshot['birthDate']) ?? DateTime(1970, 1, 1),
-      role: snapshot['role'],
-      verified: snapshot['verified'],
-      createdAt: parseDate(snapshot['createdAt']) ?? DateTime.now(),
-      lastUpdatedAt: parseDate(snapshot['lastUpdatedAt']) ?? DateTime.now(),
+      fullName: snapshot['fullName'] ?? '',
+      phoneNumber: snapshot['phoneNumber'] ?? '',
+      email: snapshot['email'] ?? '',
+      nationality: snapshot['nationality'] ?? '',
+      gender: snapshot['gender'] ?? '',
+      age: calculateAge(birthDate),
+      birthDate: birthDate,
+      role: snapshot['role'] ?? '',
+      verified: snapshot['verified'] ?? false,
+      createdAt: createdAt,
+      lastUpdatedAt: updatedAt,
     );
   }
 

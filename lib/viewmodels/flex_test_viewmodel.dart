@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:rmts/data/models/hive/flex_data.dart';
+import 'package:rmts/data/repositories/sensor_data_repository.dart';
 import 'package:rmts/data/services/ble_service.dart';
 import 'package:rmts/viewmodels/glovestatus_viewmodel.dart';
 import 'dart:async';
@@ -16,6 +19,7 @@ class FlexTestViewModel extends ChangeNotifier {
 
   List<FlexData> _flexDataList = [];
   List<FlexData> get flexDataList => _flexDataList;
+  final SensorDataRepository _sensorDataRepository = SensorDataRepository();
 
   FlexTestViewModel(this.gloveStatusViewModel);
 
@@ -28,6 +32,7 @@ class FlexTestViewModel extends ChangeNotifier {
   Future<void> startFlexTest(String userId) async {
     isTesting = true;
     result = null;
+    String error;
     notifyListeners();
 
     final completer = Completer<void>();
@@ -41,7 +46,6 @@ class FlexTestViewModel extends ChangeNotifier {
         }
         return;
       }
-
       if (data.startsWith("FlexResult:")) {
         final parts = data.replaceFirst("FlexResult:", "").split(",");
         final bent = double.parse(parts[0]);
@@ -58,6 +62,8 @@ class FlexTestViewModel extends ChangeNotifier {
         result = flex;
         isTesting = false;
         gloveStatusViewModel.updateSyncTime(); 
+        _sensorDataRepository.saveFlexData(flex, userId);
+
         notifyListeners();
 
         if (!completer.isCompleted) {

@@ -1,5 +1,6 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:rmts/utils/helpers/app_settings.dart';
 import 'package:rmts/viewmodels/appointment_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 import 'package:rmts/viewmodels/auth/find_glove_viewmodel.dart';
@@ -41,4 +42,5 @@ List<SingleChildWidget> appProviders(gloveRepository) => [
   ChangeNotifierProvider(create: (_) => AppointmentViewmodel()),
   ChangeNotifierProvider(create: (_) => FindGloveViewmodel()),
   ChangeNotifierProvider(create: (_) => VibrationMotorViewmodel()),
+  ChangeNotifierProvider(create: (_) => AppSettings()),
 ];
