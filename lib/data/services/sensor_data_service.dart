@@ -26,8 +26,8 @@ class SensorDataService extends ChangeNotifier {
     await FirebaseFirestore.instance
         .collection('patients')
         .doc(patientId)
-        .collection('sensors')
-        .doc('mpu_data')
+        .collection('mpu_data')
+        .doc('mpu_data_${mpudata.timestamp.millisecondsSinceEpoch}')
         .set({
       'lowered': mpudata.lowered,
       'raised': mpudata.raised,
@@ -41,8 +41,8 @@ class SensorDataService extends ChangeNotifier {
     await FirebaseFirestore.instance
         .collection('patients')
         .doc(patientId)
-        .collection('sensors')
-        .doc('flex_data')
+        .collection('flex_data')
+        .doc('flex_data_${flexData.timestamp.millisecondsSinceEpoch}')
         .set({
       'bent': flexData.bent,
       'timestamp': flexData.timestamp.millisecondsSinceEpoch,
@@ -55,8 +55,8 @@ class SensorDataService extends ChangeNotifier {
     await FirebaseFirestore.instance
         .collection('patients')
         .doc(patientId)
-        .collection('sensors')
-        .doc('fsr_data')
+        .collection('fsr_data')
+        .doc('fsr_data_${fsrData.timestamp.millisecondsSinceEpoch}')
         .set({
       'pressure': fsrData.pressure,
       'timestamp': fsrData.timestamp.millisecondsSinceEpoch,

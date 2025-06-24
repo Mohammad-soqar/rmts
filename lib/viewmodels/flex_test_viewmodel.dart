@@ -5,15 +5,23 @@ import 'package:hive/hive.dart';
 import 'package:rmts/data/models/hive/flex_data.dart';
 import 'package:rmts/data/repositories/sensor_data_repository.dart';
 import 'package:rmts/data/services/ble_service.dart';
+import 'package:rmts/viewmodels/glovestatus_viewmodel.dart';
+import 'dart:async';
+
+
 
 class FlexTestViewModel extends ChangeNotifier {
   bool isTesting = false;
   FlexData? result;
   double? bentValue;
 
+  final GloveStatusViewModel gloveStatusViewModel;
+
   List<FlexData> _flexDataList = [];
   List<FlexData> get flexDataList => _flexDataList;
   final SensorDataRepository _sensorDataRepository = SensorDataRepository();
+
+  FlexTestViewModel(this.gloveStatusViewModel);
 
   Future<void> loadFlexdata() async {
     final box = Hive.box<FlexData>('flex_data');
@@ -53,6 +61,7 @@ class FlexTestViewModel extends ChangeNotifier {
 
         result = flex;
         isTesting = false;
+        gloveStatusViewModel.updateSyncTime(); 
         _sensorDataRepository.saveFlexData(flex, userId);
 
         notifyListeners();
@@ -61,10 +70,7 @@ class FlexTestViewModel extends ChangeNotifier {
           completer.complete();
         }
       } else if (data.contains("Error: No Glove Detected")) {
-        // ⛔ Handle glove not worn error
         isTesting = false;
-        error =
-            "Please wear the glove properly and try again."; // ⬅️ Optional if you have UI for error
         notifyListeners();
 
         if (!completer.isCompleted) {
