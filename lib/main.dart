@@ -14,6 +14,8 @@ import 'package:rmts/ui/responsive/responsive_layout_screen.dart';
 import 'package:rmts/ui/responsive/web_screen_layout.dart';
 import 'package:rmts/ui/themes/theme.dart';
 import 'package:rmts/ui/views/auth/splashScreens/SplashView.dart';
+import 'package:rmts/utils/helpers/app_settings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,10 +32,28 @@ void main() async {
 
   final gloveRepository = GloveRepository();
 
+  final prefs = await SharedPreferences.getInstance();
+  final themeStr = prefs.getString('display_mode') ?? 'system';
+  final langCode = 'en';
+
+  ThemeMode themeMode = switch (themeStr) {
+    'light' => ThemeMode.light,
+    'dark' => ThemeMode.dark,
+    _ => ThemeMode.system,
+  };
+
+  final appSettings = AppSettings();
+  appSettings.setThemeMode(themeMode);
+  appSettings.setLocale(Locale(langCode));
+
   runApp(
     MultiProvider(
-      providers:  appProviders(gloveRepository),
-      child: const MyApp(),
+      providers: [
+        ...appProviders(gloveRepository),
+        ChangeNotifierProvider(
+            create: (_) => appSettings), // Use configured instance
+      ],
+      child: MyApp(),
     ),
   );
 }
@@ -43,12 +63,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settings = Provider.of<AppSettings>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'RMTS System',
       theme: const MaterialTheme(TextTheme()).light(),
       darkTheme: const MaterialTheme(TextTheme()).dark(),
-      themeMode: ThemeMode.system,
+      themeMode: settings.themeMode,
+      locale: settings.locale,
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ar'),
+        Locale('tr'),
+      ],
+      localizationsDelegates: [
+        // Add localization delegates
+      ],
       home: const AuthWrapper(),
     );
   }

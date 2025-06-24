@@ -49,6 +49,7 @@ dependencies:
   open_file: ^3.5.10
   path_provider: ^2.1.5
   provider: ^6.1.2
+  shared_preferences: ^2.5.3
   uuid: ^4.5.1
 
 dev_dependencies:
@@ -70,7 +71,7 @@ flutter:
 
     - "assets/rmt_logo.png"
     - "assets/splashScreen.png"
-    - "assets/icons/Avatar.png" 
+    - "assets/icons/Avatar.png"
     - "assets/doctors/1.png"
     - "assets/doctors/2.png"
     - "assets/doctors/3.png"

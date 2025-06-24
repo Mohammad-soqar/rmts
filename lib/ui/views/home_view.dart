@@ -85,20 +85,7 @@ class _HomeViewState extends State<HomeView> {
                       },
                     ),
                     const SizedBox(height: 30),
-                    if (gloveViewModel.currentGlove != null)
-                      CustomButton(
-                        color: Theme.of(context).colorScheme.primary,
-                        label:
-                            "Glove Page  Status: ${gloveViewModel.currentGlove!.status.name}",
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const GloveView()));
-                        },
-                      ),
-                    const SizedBox(height: 16),
-                    const DebugButtons(), // ✅ Don't forget to remove in production
+                   
                   ],
                 ),
               ),
