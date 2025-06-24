@@ -14,23 +14,33 @@ import 'package:rmts/viewmodels/mpu_test_viewmodel.dart';
 import 'package:rmts/viewmodels/ppg_test_viewmodel.dart';
 import 'package:rmts/viewmodels/reports_viewmodel.dart';
 import 'package:rmts/viewmodels/vibration_motor_viewmodel.dart';
+import 'package:rmts/viewmodels/glovestatus_viewmodel.dart';
 
 List<SingleChildWidget> appProviders(gloveRepository) => [
-      ChangeNotifierProvider(create: (_) => UserViewModel()..fetchUserData()),
-      ChangeNotifierProvider(create: (_) => MpuTestViewModel()),
-      ChangeNotifierProvider(create: (_) => PpgTestViewModel()),
-      ChangeNotifierProvider(create: (_) => FlexTestViewModel()),
-      ChangeNotifierProvider(
-        create: (_) =>
-            GloveConnectionViewModel(targetName: 'RA_Glove_GLOVTY')..init(),
-      ),
-      ChangeNotifierProvider(create: (_) => AuthViewModel()),
-      ChangeNotifierProvider(create: (_) => RegisterViewModel()),
-      ChangeNotifierProvider(create: (_) => ReportsViewModel()),
-      ChangeNotifierProvider(create: (_) => GloveViewModel(gloveRepository)),
-      ChangeNotifierProvider(create: (_) => AppointmentViewmodel()),
-      ChangeNotifierProvider(create: (_) => FindGloveViewmodel()),
-      ChangeNotifierProvider(create: (_) => VibrationMotorViewmodel()),
-      ChangeNotifierProvider(create: (_) => FSRViewModel()),
-       ChangeNotifierProvider(create: (_) => AppSettings()),
-    ];
+  ChangeNotifierProvider(create: (_) => GloveStatusViewModel()),  // The shared instance
+
+  ChangeNotifierProvider(create: (_) => UserViewModel()..fetchUserData()),
+  ChangeNotifierProvider(
+    create: (context) => MpuTestViewModel(context.read<GloveStatusViewModel>()),
+  ),
+  ChangeNotifierProvider(
+    create: (context) => PpgTestViewModel(context.read<GloveStatusViewModel>()),
+  ),
+  ChangeNotifierProvider(
+    create: (context) => FlexTestViewModel(context.read<GloveStatusViewModel>()),
+  ),
+  ChangeNotifierProvider(
+    create: (context) => FSRViewModel(context.read<GloveStatusViewModel>()),
+  ),
+  ChangeNotifierProvider(
+    create: (_) => GloveConnectionViewModel(targetName: 'RA_Glove_GLOVToBY')..init(),
+  ),
+  ChangeNotifierProvider(create: (_) => AuthViewModel()),
+  ChangeNotifierProvider(create: (_) => RegisterViewModel()),
+  ChangeNotifierProvider(create: (_) => ReportsViewModel()),
+  ChangeNotifierProvider(create: (_) => GloveViewModel(gloveRepository)),
+  ChangeNotifierProvider(create: (_) => AppointmentViewmodel()),
+  ChangeNotifierProvider(create: (_) => FindGloveViewmodel()),
+  ChangeNotifierProvider(create: (_) => VibrationMotorViewmodel()),
+  ChangeNotifierProvider(create: (_) => AppSettings()),
+];

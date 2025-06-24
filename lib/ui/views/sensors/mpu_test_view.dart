@@ -1,5 +1,6 @@
 // mpu_test_screen.dart
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rmts/data/services/ble_service.dart';
@@ -36,12 +37,19 @@ class _MpuTestViewState extends State<MpuTestView>
      _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MpuTestViewModel>().startMpuTest('userId').catchError(
+  final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    } else {
+      final userId = user.uid;
+       WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MpuTestViewModel>().startMpuTest(userId).catchError(
             (_) => _showErr('Please wear the glove properly and try again.'),
           );
     });
+      
+    }
+   
   }
  
  @override
@@ -69,9 +77,9 @@ class _MpuTestViewState extends State<MpuTestView>
       case MpuTestStage.idle:
         return const Text('Idle');
      case MpuTestStage.waitingRaise:
-       return const Text('Please raise your wrist...',style: TextStyle(fontSize: 18));
+       return const Text('Please raise your wrist for 5 seconds...',style: TextStyle(fontSize: 18));
       case MpuTestStage.waitingLower:
-          return const Text("Now lower your wrist...", style: TextStyle(fontSize: 18));
+          return const Text("Now lower your wrist for 5 seconds...", style: TextStyle(fontSize: 18));
       case MpuTestStage.done:
         return const Text('Test completed!', style: TextStyle(fontSize: 18));
     }
@@ -129,7 +137,7 @@ Widget _buildProgressBar(MpuTestStage stage) {
               _buildProgressBar(vm.stage),
             
                   Text(
-                    'Raise and lower your wrist following the rhythm…',
+                    'Raise and lower your wrist…',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),

@@ -1,10 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:rmts/data/models/hive/mpu_data.dart';
 import 'package:rmts/data/repositories/sensor_data_repository.dart';
 import 'package:rmts/data/services/ble_service.dart';
+import 'package:rmts/viewmodels/glovestatus_viewmodel.dart';
 
 enum MpuTestStage {
   idle,
@@ -17,10 +17,14 @@ class MpuTestViewModel extends ChangeNotifier {
   bool isTesting = false;
   MpuData? result;
   MpuTestStage stage = MpuTestStage.idle;
+
+  final GloveStatusViewModel gloveStatusViewModel;
   final SensorDataRepository _sensorDataRepository = SensorDataRepository();
 
   List<MpuData> _mpuDataList = [];
   List<MpuData> get mpuDataList => _mpuDataList;
+
+  MpuTestViewModel(this.gloveStatusViewModel);
 
   Future<void> loadMpuData() async {
     final box = Hive.box<MpuData>('mpu_data');
@@ -34,6 +38,7 @@ class MpuTestViewModel extends ChangeNotifier {
     stage = MpuTestStage.waitingRaise;
     String error;
     notifyListeners();
+
     await BleService.sendCommand("startMPUTest");
 
     BleService.onDataReceived((data) async {
@@ -53,18 +58,27 @@ class MpuTestViewModel extends ChangeNotifier {
           lowered: lowered,
           timestamp: DateTime.now(),
         );
+
         final box = Hive.box<MpuData>('mpu_data');
         if (box.isNotEmpty) await box.clear();
         await box.add(mpu);
 
         result = mpu;
         isTesting = false;
-        _sensorDataRepository.saveMpuData(mpu, userId);
+       await _sensorDataRepository.saveMpuData(mpu, userId);
 
         stage = MpuTestStage.done;
+        gloveStatusViewModel.updateSyncTime();  
         notifyListeners();
+
         await BleService.sendCommand("stopMPU");
       }
-    }); // notify for result view
+    });
+  }
+
+  void stopTest() {
+    isTesting = false;
+    stage = MpuTestStage.idle;
+    notifyListeners();
   }
 }
