@@ -14,10 +14,8 @@ import 'package:rmts/ui/responsive/responsive_layout_screen.dart';
 import 'package:rmts/ui/responsive/web_screen_layout.dart';
 import 'package:rmts/ui/themes/theme.dart';
 import 'package:rmts/ui/views/auth/login_view.dart';
-import 'package:rmts/ui/views/auth/splashScreens/SplashView.dart';
 import 'package:rmts/utils/helpers/app_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/data/models/appointment.dart';
 import 'package:rmts/ui/views/appointment_management/doctor_view.dart';
 import 'package:rmts/ui/widgets/appointment_tile.dart';
 import 'package:rmts/ui/widgets/doctorDetails/doctor_tile_widget.dart';
@@ -50,16 +52,6 @@ class _AppointmentViewState extends State<AppointmentView> {
         ),
       ];
 
-  List<AppointmentTile> get _canceled => const [
-        AppointmentTile(
-          doctorName: 'Dr. Dan Müller',
-          date: '07/30/2024',
-          time: '09:00 AM',
-          btn1Text: 'View Details',
-          btn2Text: 'Reschedule',
-        ),
-      ];
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -75,12 +67,30 @@ class _AppointmentViewState extends State<AppointmentView> {
 
     if (vm.errorMessage != null) {
       return Scaffold(
-        body: Center(child: Text(vm.errorMessage!)),
+        body: Center(child: Text("Error loading data: ${vm.errorMessage}")),
       );
     }
 
+    if (vm.doctorUserInfo == null || vm.doctorDetails == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    List<AppointmentTile> buildTiles(List<Appointment> list) {
+      return list.map((appt) {
+        return AppointmentTile(
+          doctorName: vm.doctorUserInfo?.fullName ?? "Dr. Unknown",
+          date: DateFormat('dd/MM/yyyy').format(appt.dateTime),
+          time: DateFormat('hh:mm a').format(appt.dateTime),
+          btn1Text: 'Cancel',
+          btn2Text: 'Reschedule',
+        );
+      }).toList();
+    }
+
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Appointments'),
@@ -96,22 +106,27 @@ class _AppointmentViewState extends State<AppointmentView> {
           child: Column(
             children: [
               DoctorTileWidget(
-                doctorName: vm.doctorUserInfo?.fullName ?? 'Dr. Unknown',
+                doctorName: vm.doctorUserInfo!.fullName,
                 doctorImage: 'assets/doctors/5.png',
                 doctorSpecialty: 'Rheumatologist',
                 doctorRating: '4.8',
-                specialization: 'joint care & autoimmune diseases',
+                specialization: 'joint care',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DoctorDetailsView(
-                        doctor: vm
-                            .doctorDetails, // Provide a default Doctor instance or handle accordingly
-                        userInfo: vm.doctorUserInfo,
+                  if (vm.doctorDetails != null && vm.doctorUserInfo != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DoctorDetailsView(
+                          doctor: vm.doctorDetails!,
+                          userInfo: vm.doctorUserInfo!,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Doctor info is not ready")),
+                    );
+                  }
                 },
               ),
               const SizedBox(height: 20),
@@ -134,8 +149,7 @@ class _AppointmentViewState extends State<AppointmentView> {
                   labelStyle: const TextStyle(fontWeight: FontWeight.w600),
                   tabs: const [
                     Tab(text: 'Upcoming'),
-                    Tab(text: 'Completed'),
-                    Tab(text: 'Canceled'),
+                    Tab(text: 'Past'),
                   ],
                   overlayColor: WidgetStateProperty.all(Colors.transparent),
                   splashFactory: NoSplash.splashFactory,
@@ -146,14 +160,12 @@ class _AppointmentViewState extends State<AppointmentView> {
 
               // tab views must be inside Expanded
               Expanded(
-                child: TabBarView(
-                  children: [
-                    ListView(children: _upcoming),
-                    ListView(children: _completed),
-                    ListView(children: _canceled),
-                  ],
-                ),
-              ),
+                  child: TabBarView(
+                children: [
+                  ListView(children: buildTiles(vm.upcomingAppointments)),
+                  ListView(children: buildTiles(vm.pastAppointments)),
+                ],
+              )),
             ],
           ),
         ),

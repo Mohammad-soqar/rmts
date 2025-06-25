@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rmts/data/models/doctor.dart';
 import 'package:rmts/data/models/user.dart';
 import 'package:rmts/ui/widgets/doctorDetails/calendar_widget.dart';
 import 'package:rmts/ui/widgets/doctorDetails/doctor_tile_widget.dart';
+import 'package:rmts/viewmodels/appointment_viewmodel.dart';
+import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
 
 class DoctorDetailsView extends StatefulWidget {
   final Doctor? doctor;
@@ -16,6 +19,7 @@ class DoctorDetailsView extends StatefulWidget {
 
 class _DoctorDetailsViewState extends State<DoctorDetailsView> {
   bool isExpanded = false;
+  bool _appointmentsLoaded = false;
 
   late final String fullText;
   late final Doctor? doctorDetails;
@@ -30,7 +34,32 @@ class _DoctorDetailsViewState extends State<DoctorDetailsView> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_appointmentsLoaded) {
+      _appointmentsLoaded = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final authVm = Provider.of<AuthViewModel>(context, listen: false);
+        final apptVm =
+            Provider.of<AppointmentViewmodel>(context, listen: false);
+        apptVm.loadPatientAppointment(authVm.currentPatient!.uid);
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<AppointmentViewmodel>(context);
+    final auth = Provider.of<AuthViewModel>(context);
+
+    final now = DateTime.now();
+    final upcomingAppointments = vm.appointments_patient
+        .where(
+          (appt) => appt.dateTime.isAfter(now),
+        )
+        .toList();
+    final hasAppointment = upcomingAppointments.isNotEmpty;
+
     if (doctorDetails == null || doctorUserInfo == null) {
       return Scaffold(
         appBar: AppBar(
@@ -58,7 +87,7 @@ class _DoctorDetailsViewState extends State<DoctorDetailsView> {
                   doctorImage: 'assets/doctors/5.png',
                   doctorSpecialty: 'Rheumatologist',
                   doctorRating: '4.8',
-                  specialization: 'joint care & autoimmune diseases'),
+                  specialization: 'joint care'),
               const SizedBox(height: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,15 +136,13 @@ class _DoctorDetailsViewState extends State<DoctorDetailsView> {
                 ],
               ),
               const Spacer(),
-
-               /*  // Check if there are upcoming appointments
-                (doctorDetails?.appointments == null ||
-                    doctorDetails!.appointments!.isEmpty)
-                  ? EasyDateTimePicker(
-                    doctor: widget.doctor,
-                  )
-                  : Column(
-                    children: [
+              if (!hasAppointment)
+                EasyDateTimePicker(
+                  doctor: widget.doctor,
+                )
+              else
+                Column(
+                  children: [
                     Text(
                       'You have an appointment already booked.',
                       style: Theme.of(context).textTheme.bodyMedium,
@@ -124,23 +151,19 @@ class _DoctorDetailsViewState extends State<DoctorDetailsView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                      ElevatedButton(
-                        onPressed: () {
-                        // TODO: Implement cancel appointment logic
-                        },
-                        child: const Text('Cancel'),
-                      ),
-                      const SizedBox(width: 12),
-                      ElevatedButton(
-                        onPressed: () {
-                        // TODO: Implement reschedule appointment logic
-                        },
-                        child: const Text('Reschedule'),
-                      ),
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Cancel'),
+                        ),
+                        const SizedBox(width: 12),
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Reschedule'),
+                        ),
                       ],
                     ),
-                    ],
-                  ), */
+                  ],
+                ),
               const Spacer(),
             ],
           ),

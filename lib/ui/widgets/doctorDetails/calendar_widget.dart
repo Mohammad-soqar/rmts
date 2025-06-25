@@ -58,14 +58,14 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<AppointmentViewmodel>(context);
-    final auth = Provider.of<AuthViewModel>(context, listen: false);
+    final auth = Provider.of<AuthViewModel>(context);
 
-    final List<DateTime> unavailableDates = vm.appointments
+    final List<DateTime> unavailableDates = vm.appointments_patient
         .map((a) => DateTime(a.dateTime.year, a.dateTime.month, a.dateTime.day))
         .toSet()
         .toList();
 
-    final List<String> unavailableSlots = vm.appointments
+    final List<String> unavailableSlots = vm.appointments_patient
         .where((a) =>
             selectedDate != null &&
             a.dateTime.year == selectedDate!.year &&
