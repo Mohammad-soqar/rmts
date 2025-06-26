@@ -8,6 +8,7 @@ import 'package:rmts/ui/widgets/profile/profile_actions_list.dart';
 import 'package:rmts/ui/widgets/profile/user_tile.dart';
 import 'package:rmts/utils/helpers/app_settings.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
+import 'package:rmts/viewmodels/auth/user_viewmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileView extends StatefulWidget {
@@ -37,40 +38,43 @@ class _ProfileViewState extends State<ProfileView> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('English'),
-              trailing: currentLang == 'en' ? const Icon(Icons.check) : null,
-              onTap: () async {
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.setString('language_code', 'en');
-                settings.setLocale(const Locale('en'));
-                if (mounted) Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Arabic'),
-              trailing: currentLang == 'ar' ? const Icon(Icons.check) : null,
-              onTap: () async {
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.setString('language_code', 'ar');
-                settings.setLocale(const Locale('ar'));
-                if (mounted) Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Turkish'),
-              trailing: currentLang == 'tr' ? const Icon(Icons.check) : null,
-              onTap: () async {
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.setString('language_code', 'tr');
-                settings.setLocale(const Locale('tr'));
-                if (mounted) Navigator.pop(context);
-              },
-            ),
-          ],
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('English'),
+                trailing: currentLang == 'en' ? const Icon(Icons.check) : null,
+                onTap: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('language_code', 'en');
+                  settings.setLocale(const Locale('en'));
+                  if (mounted) Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Arabic'),
+                trailing: currentLang == 'ar' ? const Icon(Icons.check) : null,
+                onTap: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('language_code', 'ar');
+                  settings.setLocale(const Locale('ar'));
+                  if (mounted) Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Turkish'),
+                trailing: currentLang == 'tr' ? const Icon(Icons.check) : null,
+                onTap: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('language_code', 'tr');
+                  settings.setLocale(const Locale('tr'));
+                  if (mounted) Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
         );
       },
     );
@@ -135,20 +139,12 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    final userViewModel = Provider.of<UserViewModel>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => EditPersonalDataView(
-                  patient: authViewModel
-                      .currentPatient!, // Replace with your actual Patient object
-                ),
-              ),
-            );
-          },
+        
           child: Container(
             margin: const EdgeInsets.only(top: 12.0),
             child: Text(
@@ -171,8 +167,18 @@ class _ProfileViewState extends State<ProfileView> {
           children: [
             const SizedBox(height: 20),
             UserTile(
-              name: "John Doe",
-              onTap: () {},
+              name: userViewModel.fullName,
+              onTap:   () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => EditPersonalDataView(
+                  patient: authViewModel
+                      .currentPatient!, 
+                      userInfo: authViewModel.currentUser,// Replace with your actual Patient object
+                ),
+              ),
+            );
+          },
             ),
             const SizedBox(height: 20),
             ProfileActionsList(

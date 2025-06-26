@@ -96,7 +96,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
                   backgroundColor: Theme.of(context).colorScheme.onSurface),
               BottomNavigationBarItem(
                   icon: SvgPicture.asset(
-                    'assets/icons/Glove.svg',
+                    'assets/icons/Calendar.svg',
                     // ignore: deprecated_member_use
                     color: _page == 1
                         ? Theme.of(context).colorScheme.primary

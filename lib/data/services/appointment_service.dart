@@ -70,6 +70,20 @@ class AppointmentService {
 
     return snap.docs.map((d) => Appointment.fromSnap(d)).toList();
   }
+
+  Future<void> cancelAppointment(String appointmentId, String patientId) async {
+
+    await _firestore.collection(_collection).doc(appointmentId).delete();
+
+    if (patientId != null) {
+      await _firestore
+          .collection('patients')
+          .doc(patientId)
+          .collection('appointments')
+          .doc(appointmentId)
+          .delete();
+    }
+  }
 }
 
 class AppointmentRepository {
@@ -96,5 +110,9 @@ class AppointmentRepository {
 
   Future<Map<String, List<Appointment>>> fetchAndCategorizeAppointments(String patientId) {
     return _service.fetchAndCategorizeAppointments(patientId);
+  }
+
+  Future<void> cancelAppointment(String appointmentId, String patientId) async {
+    await _service.cancelAppointment(appointmentId, patientId);
   }
 }

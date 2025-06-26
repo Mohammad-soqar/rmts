@@ -26,57 +26,57 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      child: SizedBox(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.labelText,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.labelText,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
-            SizedBox(height: 5), 
-        
-            // Input Field
-            TextFormField(
-              controller: widget.controller,
-              keyboardType: widget.keyboardType,
-              obscureText: widget.isPassword ? _obscureText : false,
-              decoration: InputDecoration(
-                hintText: widget.labelText,
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                suffixIcon: widget.isPassword
-                    ? IconButton(
-                        icon: Icon(
-                          _obscureText ? Icons.visibility_off : Icons.visibility,
-                          color: Colors.purple[700],
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
-                      )
-                    : null, 
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "${widget.labelText} is required";
-                }
-                return null;
-              },
+          ),
+          const SizedBox(height: 5),
+          TextFormField(
+            controller: widget.controller,
+            keyboardType: widget.keyboardType,
+            obscureText: widget.isPassword ? _obscureText : false,
+            readOnly: widget.readOnly,
+            enabled: !widget.readOnly,
+            style: TextStyle(
+              fontSize: 14
             ),
-          ],
-        ),
+            decoration: InputDecoration(
+              hintText: widget.labelText,
+              filled: true,
+              fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              suffixIcon: widget.isPassword && !widget.readOnly
+                  ? IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.purple[700],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    )
+                  : null,
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "${widget.labelText} is required";
+              }
+              return null;
+            },
+          ),
+        ],
       ),
     );
   }

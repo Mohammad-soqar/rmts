@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rmts/ui/views/appointment_view.dart';
 import 'package:rmts/ui/widgets/glove_data.dart';
 import 'package:rmts/ui/widgets/home/custom_app_bar.dart';
 import 'package:rmts/ui/widgets/pill_tile.dart';
@@ -76,9 +77,12 @@ class _HomeViewState extends State<HomeView> {
                       pillIcon: "assets/icons/Calendar_Add.svg",
                       pillText: "Book an appointment",
                       onTap: () async {
-                        context.read<FSRViewModel>().startFsrTest(
-                              authViewModel.currentPatient!.uid,
-                            );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AppointmentView(),
+                          ),
+                        );
                       },
                     ),
                     const SizedBox(height: 30),

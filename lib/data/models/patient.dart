@@ -4,6 +4,7 @@ class Patient {
   final String uid;
   final String emergencyContact;
   final String doctorId;
+  final String? doctorName;
   final String prescriptionId;
   final String gloveId;
   final String gloveName; //from doctor
@@ -14,6 +15,7 @@ class Patient {
     required this.uid,
     required this.emergencyContact,
     required this.doctorId,
+    this.doctorName,
     required this.prescriptionId,
     required this.gloveId,
     required this.gloveName,
@@ -34,6 +36,7 @@ class Patient {
       uid: snapshot['uid'] ?? '',
       emergencyContact: snapshot['emergencyContact'] ?? '',
       doctorId: snapshot['doctorId'] ?? '',
+      doctorName: snapshot['doctorName'], // Optional, can be null
       prescriptionId: snapshot['prescrptionId'] ?? '',
       gloveId: snapshot['gloveId'] ?? '',
       gloveName: snapshot['gloveName'] ?? '',
@@ -49,6 +52,7 @@ class Patient {
       'uid': uid,
       'emergencyContact': emergencyContact,
       'doctorId': doctorId,
+      'doctorName': doctorName,
       'prescrptionId': prescriptionId,
       'gloveId': gloveId,
       'gloveName': gloveName,

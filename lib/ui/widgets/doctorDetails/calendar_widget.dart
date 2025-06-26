@@ -52,9 +52,6 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
     '11:00 AM',
   ];
 
-  bool isWeekend(DateTime date) =>
-      date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
-
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<AppointmentViewmodel>(context);
@@ -113,7 +110,7 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
                       firstDate: DateTime.now(),
                       lastDate: DateTime.now().add(const Duration(days: 365)),
                     );
-                    if (picked != null && !isWeekend(picked)) {
+                    if (picked != null) {
                       setState(() => selectedDate = picked);
                     }
                   },
@@ -125,6 +122,8 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
 
           /// Easy Date Timeline
           EasyDateTimeLine(
+            key: ValueKey(selectedDate), // <-- this is critical
+
             initialDate: selectedDate!,
             headerProps: const EasyHeaderProps(showHeader: false),
             timeLineProps: const EasyTimeLineProps(
@@ -132,9 +131,10 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
             ),
             disabledDates: unavailableDates,
             onDateChange: (date) {
-              if (!isWeekend(date)) {
-                setState(() => selectedDate = date);
-              }
+              final today = DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day);
+              if (date.isBefore(today)) return; // ignore past
+              setState(() => selectedDate = date); // accept future
             },
             dayProps: EasyDayProps(
               height: 55,
@@ -257,7 +257,8 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: isReady
-                  ? () => vm.addAppointment(
+                  ? () => vm
+                          .addAppointment(
                         vm.doctorDetails!.uid,
                         auth.currentPatient!.uid,
                         DateTime(
@@ -272,6 +273,14 @@ class _EasyDateTimePickerState extends State<EasyDateTimePicker> {
                           int.parse(selectedTime!.split(':')[1].split(' ')[0]),
                         ),
                       )
+                          .then((_) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Appointment confirmed!'),
+                          ),
+                        );
+                        Navigator.popUntil(context, (route) => route.isFirst);
+                      })
                   : null,
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(

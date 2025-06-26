@@ -17,7 +17,10 @@ import 'package:rmts/ui/views/auth/login_view.dart';
 import 'package:rmts/utils/helpers/app_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
 void main() async {
+ 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await Hive.initFlutter();
@@ -53,13 +56,13 @@ void main() async {
         ChangeNotifierProvider(
             create: (_) => appSettings), // Use configured instance
       ],
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +70,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'RMTS System',
+      navigatorObservers: [routeObserver], // 🚩 register it here
+
       theme: const MaterialTheme(TextTheme()).light(),
       darkTheme: const MaterialTheme(TextTheme()).dark(),
       themeMode: settings.themeMode,

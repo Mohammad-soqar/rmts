@@ -50,7 +50,7 @@ class _DoctorDetailsViewState extends State<DoctorDetailsView> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<AppointmentViewmodel>(context);
-    final auth = Provider.of<AuthViewModel>(context);
+    final _auth = Provider.of<AuthViewModel>(context);
 
     final now = DateTime.now();
     final upcomingAppointments = vm.appointments_patient
@@ -59,6 +59,8 @@ class _DoctorDetailsViewState extends State<DoctorDetailsView> {
         )
         .toList();
     final hasAppointment = upcomingAppointments.isNotEmpty;
+    final String? appointmentId =
+        hasAppointment ? upcomingAppointments.first.appointmentId : null;
 
     if (doctorDetails == null || doctorUserInfo == null) {
       return Scaffold(
@@ -152,12 +154,68 @@ class _DoctorDetailsViewState extends State<DoctorDetailsView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Cancel'),
+                          onPressed: () async {
+                            try {
+                              await vm.cancelAppointment(
+                                  appointmentId!, _auth.currentPatient?.uid);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Appointment cancelled.')),
+                              );
+                              // Pop and return 'true' so caller knows to refresh:
+                              Navigator.of(context).pop(true);
+                            } catch (e) {
+                              // handle error...
+                            }
+                          },
+                          child: const Text('Cancel Appointment'),
                         ),
                         const SizedBox(width: 12),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            final shouldReschedule = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Reschedule Appointment'),
+                                content: const Text(
+                                    'Are you sure you want to reschedule your appointment?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text('No'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                        try {
+                                        await vm.cancelAppointment(
+                                          appointmentId!,
+                                          _auth.currentPatient?.uid);
+
+                                        // Pop twice: first to close the dialog, then to return to previous screen
+                                        Navigator.of(context).pop(true); // Close dialog
+                                        Navigator.of(context).pop(true); // Return to previous screen
+                                      } catch (e) {
+                                        // handle error...
+                                      }
+                                    },
+                                    child: const Text('Yes'),
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (shouldReschedule == true) {
+                              try {
+                                await vm.cancelAppointment(
+                                    appointmentId!, _auth.currentPatient?.uid);
+                                setState(() {
+                                  // Optionally trigger UI update or navigation
+                                });
+                              } catch (e) {
+                                // handle error...
+                              }
+                            }
+                          },
                           child: const Text('Reschedule'),
                         ),
                       ],

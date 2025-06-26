@@ -5,6 +5,7 @@ import 'package:rmts/ui/widgets/inputs/app_button.dart';
 import 'package:rmts/ui/widgets/inputs/app_text_field.dart';
 import 'package:rmts/utils/snackbar.dart';
 import 'package:rmts/viewmodels/auth/auth_viewmodel.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -60,7 +61,7 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       // appBar: AppBar(title: Text('Login')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Center(
             child: SingleChildScrollView(
           child: Form(
@@ -68,11 +69,15 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  "assets/rmt_logo.png",
+             
+                SvgPicture.asset(
+                  "assets/rmtslogo.svg",
+                  color: Theme.of(context).colorScheme.primary,
                   fit: BoxFit.contain,
+                  width: 100,
+                  height: 100,
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 80),
                 AppTextField(
                   labelText: 'Email or Phone Number',
                   controller:
@@ -95,14 +100,30 @@ class _LoginViewState extends State<LoginView> {
                       style: const TextStyle(color: Colors.red),
                     ),
                   ),
-                const SizedBox(height: 10),
-                CustomButton(
-                  color: Theme.of(context).colorScheme.primary,
-                  label: "Login",
-                  onPressed: _signIn,
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: CustomButton(
+                    color: Theme.of(context).colorScheme.primary,
+                    label: "Login",
+                    onPressed: _signIn,
+                  ),
                 ),
               
-                const SizedBox(height: 40),
+                const SizedBox(height: 10),
+                //forgot password button
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/forgot-password');
+                  },
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

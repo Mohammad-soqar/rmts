@@ -35,6 +35,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 SvgPicture.asset(
                   'assets/icons/Glove.svg',
                   width: 30,
+                  color: Theme.of(context).colorScheme.primary,
                   height: 30,
                 ),
                 const SizedBox(width: 10),
@@ -61,8 +62,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         ),
       ),
       actions: [
-                            GloveConnectionTile(),
-
+        GloveConnectionTile(),
       ],
     );
   }

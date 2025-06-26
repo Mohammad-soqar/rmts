@@ -85,6 +85,22 @@ class AppointmentViewmodel extends ChangeNotifier {
     }
   }
 
+  Future<void> cancelAppointment(String appointmentId, patientId) async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      await _repository.cancelAppointment(appointmentId, patientId);
+      // Optionally, you can remove the appointment from the local list
+    
+      errorMessage = null;
+    } catch (e) {
+      errorMessage = 'Error canceling appointment: $e';
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> loadPatientAppointment(String patientId) async {
     isLoading = true;
     notifyListeners();
